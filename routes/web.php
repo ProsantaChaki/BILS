@@ -4,19 +4,19 @@
 
 
 Route::get('app/language/{lang}',function ($lang){
-    try {		
+    try {
         if (in_array($lang,['en','bn'])) {
             Session::put('locale', $lang);
             App::setLocale($lang);
-            return redirect()->back();
+
+			$locale = App::getLocale();
+		   return redirect()->back();
         }
         return redirect()->back();
     } catch (\Exception $exception) {
         return redirect()->back();
     }
 });
-
-
 
 
 Route::get('app/login',array('as'=>'Sign in', 'uses' =>'AppAuthController@authLogin'));
@@ -36,26 +36,29 @@ Route::post('app/auth/forget/password',array('as'=>'Forgot Password' , 'uses' =>
 Route::get('app/auth/forget/password/{user_id}/verify',array('as'=>'Forgot Password Verify' , 'uses' =>'AppAuthController@authSystemForgotPasswordVerification'));
 Route::post('app/auth/forget/password/{user_id}/verify',array('as'=>'New Password Submit' , 'uses' =>'AppAuthController@authSystemNewPasswordPost'));
 
-// app will be app user auth middleware
- Route::get('app/dashboard',array('as'=>' Dashboard' , 'uses' =>'FrontEndController@index'));
- Route::get('app/message',array('as'=>'Message' , 'uses' =>'FrontEndController@messageList'));
- Route::get('app/notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeList'));
- Route::get('app/detail-notice/{id}',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeDetail'));
- Route::get('app/publication',array('as'=>' Publication' , 'uses' =>'FrontEndController@publicationList'));
- Route::get('app/detail-publication/{id}',array('as'=>' Publication' , 'uses' =>'FrontEndController@publicationDetail'));
- Route::get('app/notification',array('as'=>' Notification' , 'uses' =>'FrontEndController@notificationList'));  
- 
-  
- Route::get('app/course',array('as'=>' Course' , 'uses' =>'FrontEndController@courseList'));
- Route::get('app/survey',array('as'=>' Survey' , 'uses' =>'FrontEndController@surveyList'));
-
-
-/*
 Route::group(['middleware'=>'appUser'], function() {
-    Route::get('app/dashboard',array('as'=>'User Dashboard' , 'uses' =>'FrontEndController@index'));
+	Route::get('/',array('as'=>'Dashboard' , 'uses' =>'FrontEndController@index'));
+    Route::get('app/auth/logout/{email}',array('as'=>'Logout' , 'uses' =>'FrontEndController@authLogout'));
+
+	Route::get('app/dashboard',array('as'=>' Dashboard' , 'uses' =>'FrontEndController@index'));
+	Route::get('app/dashboard-content',array('as'=>' Dashboard' , 'uses' =>'FrontEndController@dashboard'));
+	Route::get('app/profile',array('as'=>' Profile' , 'uses' =>'FrontEndController@profileView'));
+
+	Route::get('app/message',array('as'=>'Message' , 'uses' =>'FrontEndController@messageList'));
+	Route::get('app/notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeList'));
+	Route::get('app/detail-notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeDetail'));
+	Route::get('app/publication',array('as'=>' Publication' , 'uses' =>'FrontEndController@publicationList'));
+	Route::get('app/detail-publication',array('as'=>' Publication' , 'uses' =>'FrontEndController@publicationDetail'));
+	Route::get('app/notification',array('as'=>' Notification' , 'uses' =>'FrontEndController@notificationList'));
+
+
+	Route::get('app/course',array('as'=>' Course' , 'uses' =>'FrontEndController@courseList'));
+	Route::get('app/survey',array('as'=>' Survey' , 'uses' =>'FrontEndController@surveyList'));
+
+
 });
 
-*/
+
 
 ///-------------------------------------------------- admin --------------------------------------------------
 
@@ -66,7 +69,7 @@ Route::get('/auth',array('as'=>'Sign in', 'uses' =>'SystemAuthController@authLog
 Route::get('auth/login',array('as'=>'Sign in', 'uses' =>'SystemAuthController@authLogin'));
 Route::post('auth/post/login',array('as'=>'Sign in', 'uses' =>'SystemAuthController@authPostLogin'));
 
-##App User Message 
+##App User Message
 Route::get('/message/app-user/{id}',array('as'=>'App User Message', 'uses' =>'AppUserController@appUserMessage'));
 Route::post('app-user-message-save',array('as'=>'App User Message Save', 'uses' =>'AppUserController@appUserMessageSave'));
 
@@ -80,8 +83,6 @@ Route::post('auth/forget/password/{user_id}/verify',array('as'=>'New Password Su
 
 Route::group(['middleware' => ['auth']], function () {
     #logout
-
-
 	Route::get('/',array('as'=>'Dashboard' , 'uses' =>'AdminController@index'));
     Route::get('auth/logout/{email}',array('as'=>'Logout' , 'uses' =>'SystemAuthController@authLogout'));
 	Route::get('/dashboard',array('as'=>'Dashboard' , 'uses' =>'AdminController@index'));
@@ -126,6 +127,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     /*-------------- Messages Start-------------*/
+    Route::get('messages/category-messages-management',array('as'=>'All Messages Management', 'uses' =>'MessageController@categoryMessages'));
+
 	Route::get('messages/all-messages-management',array('as'=>'All Messages Management', 'uses' =>'MessageController@all_messages'));
 	Route::get('/message/sent-message-list',array('as'=>'Sent Message List', 'uses' =>'MessageController@messageList'));
 	Route::get('/message/message-view/{id}',array('as'=>'Sent Message View', 'uses' =>'MessageController@messageView'));
@@ -231,24 +234,30 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/report/app-user',array('as'=>'App user report', 'uses' =>'AppUserController@appUserReport'));
 	Route::post('/report/app-user-auto-suggest',array('as'=>'App user name auto-suggest', 'uses' =>'AppUserController@appUserGroupNameAutoComplete'));
 	Route::post('/report/app-user-report',array('as'=>'Get App user Report', 'uses' =>'AppUserController@getAppUserReport'));
-	
+
 	Route::get('/message/view-app-user/{id}',array('as'=>'Get App user View', 'uses' =>'AppUserController@app_user_view'));
 	Route::get('/message/change-app-user-status/{id}',array('as'=>'Change App User Status', 'uses' =>'AppUserController@changeAppUserStatus'));
 	##Get Message Category
 	Route::get('/message/get-message-category',array('as'=>'Get Message Caategory', 'uses' =>'MessageController@getMessageCategory'));
 	##Load App User From Group
 	Route::post('/message/load-app-user-from-group',array('as'=>'Load App User From Group', 'uses' =>'MessageController@loadAppUserFromGroup'));
-	
+
 	Route::post('/course/teacher-name',array('as'=>'Load Teacher Name', 'uses' =>'CoursesController@loadTeacherName'));
-	
+
 	Route::get('/course/verify-payment/{id}',array('as'=>'Payment Varify', 'uses' =>'CoursesController@paymentVerify'));
 
 	Route::get('/message/load-app-user-group',array('as'=>'Load Message Group', 'uses' =>'MessageController@loadAppUserGroup'));
 	##Search App Users Group
 	Route::post('/message/search-app-users-group',array('as'=>'Search App Users Group', 'uses' =>'MessageController@searchAppUsersGroup'));
+	Route::get('/message/search-message_category/{key}',array('as'=>'Search App Users Group', 'uses' =>'MessageController@searchMessageCategory'));
+
 	Route::post('/message/admin-message-sent-to-group',array('as'=>'Sent Group Message', 'uses' =>'MessageController@newGroupMessageSent'));
+    Route::get('/message/admin-group-message-seen/{groupId}/{categoryId}',array('as'=>'group message seen', 'uses' =>'MessageController@newGroupMessageSeen'));
+    Route::get('/message/admin-message-seen/{appUserId}',array('as'=>'group message seen', 'uses' =>'MessageController@newMessageSeen'));
 
 	Route::post('/message/load-group-message',array('as'=>'Load Group Message', 'uses' =>'MessageController@loadGroupMessage'));
+    Route::get('/message/load-new-message',array('as'=>'New message', 'uses' =>'MessageController@newMessageLoad'));
+    Route::post('/message/load-category-message',array('as'=>'Load Group Message', 'uses' =>'MessageController@loadCategoryMessage'));
 
 
 });
@@ -291,7 +300,7 @@ Route::group(['middleware' => ['permission']], function () {
 
 
     Route::post('/survey/report/survey-summary',array('as'=>'Survey Summary Report' , 'action_id'=>'27', 'uses' =>'SurveysController@surveySummeryReport'));
-    
+
     ## Siam Start
     Route::get('report/course-summary',array('as'=>'Course Summary Report' , 'action_id'=>'25', 'uses' =>'CoursesController@courseSummery'));
     Route::post('/report/course/get-course-summary',array('as'=>'Get Course Summary Report' , 'action_id'=>'25', 'uses' =>'CoursesController@getCourseSummery'));
@@ -419,7 +428,7 @@ Route::get('/settings/survey/survey-categories-edit/{id}',array('as'=>'Edit Surv
 	Route::get('/course/teacher/teacher-edit/{id}',array('as'=>'Teacher Update', 'action_id'=>'90', 'uses' =>'TeacherController@teacherEdit'));
 	Route::get('/course/teacher/teacher-delete/{id}',array('as'=>'Teacher Delete', 'action_id'=>'91', 'uses' =>'TeacherController@teacherDelete'));
 	/*--------------  Manage Teacher End  -------------*/
-	
+
 	/*--------------  Group Messaage  -------------*/
 	Route::get('messages/group-messages-management',array('as'=>'Manage Group Message', 'action_id'=>'94', 'uses' =>'MessageController@groupMessageManagement'));
 

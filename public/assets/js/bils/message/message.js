@@ -5,6 +5,9 @@ $(document).ready(function () {
 	var url = $('.site_url').val();
 	var number_of_msg = 10;
 	var loaded = 1;
+
+
+
 	//Load App User Group Using Notice Controller
 	$.ajax({
 		url: url+'/notice/load-app-user-groups',
@@ -194,13 +197,14 @@ $(document).ready(function () {
 					$.each(app_user, function(i,row){
 						html+='<li onclick="loadMessage('+row["app_user_id"]+','+number_of_msg+')" class="contact ">';
 						html+='<div class="wrap">';
-						html+='<span class="contact-status online"></span>';
+						
 						if (row["user_profile_image"]!=null && row["user_profile_image"]!="") {
 							html+='<img src="'+app_user_profile_url+'/'+row["user_profile_image"]+'" alt="" />';
 						}
 						else{
 							html+='<img src="'+app_user_profile_url+'/no-user-image.png" alt="" />';
 						}
+						
 						html+='<div class="meta">';
 						html+='<p class="name">'+row["name"]+'</p>';
 						//html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
@@ -228,7 +232,6 @@ $(document).ready(function () {
 
     loadMessage = function loadMessage(app_user_id, number_of_msg){//
 		$("#search_app_user").val("");
-		//alert('into loadmessage')
 		//event.preventDefault();
 		$.ajaxSetup({
 			headers:{
@@ -257,88 +260,118 @@ $(document).ready(function () {
 
 				var message_body = "";
 				if(!jQuery.isEmptyObject(message)){
-
 					$.each(message, function(i,message){
 						html = "";
-
 						if( (message["admin_id"] != null && message["admin_id"] != "" ) && ((message["admin_message"]!=null && message["admin_message"]!="") || ( message["is_attachment"]!=""&& message["is_attachment"]!=null )) ){
 							html += '<li class="sent_msg">';
 
-							html += '<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />';
+							if($.trim(message['admin_image']) == "null" || $.trim(message['admin_image']) == ""  ) admin_image = "no-user-image.png";
+							else  									 	admin_image = message['admin_image'];
+							html += '<img style="width:25px;height:25px; cursor:pointer" title="'+message['admin_name']+'" src="'+admin_image_url+"/"+admin_image+'" alt="" />';
 
 							if (message["admin_message"]!=null && message["admin_message"]!="") {
-								html += '<p>'+message["admin_message"]+'</p><br><br><br>';
+								html += '<p class="right">'+message["admin_message"]+'</p><br><br><br>';
 							}else{
-								html+="<br><br>";
+								html+="";
 							}
-
 							if(message["is_attachment"]==1){
-								//attachment_type = 'JPG,mkv';
-								//admin_atachment = 'aa.jpg,bb.mkv'
-								if(message["attachment_type"]==1){
-									//Image
-									html += '<img  class="zoomImg" style="height:150px !important; width:180px !important; border-top-left-radius: 25px !important; border-top-right-radius: 0px !important; border-bottom-left-radius: 20px !important; border-bottom-right-radius: 20px !important;" src="'+msg_image_url+'/'+message["admin_atachment"]+'" alt="">';
-								 //onclick="zoomImg()"
+								html+="<div class='attachment_div'>";
+								attachements = message["admin_atachment"].split(',');
+								var old_type = "";
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];
+									line_break = "";
+									if(old_type !=  attachment_type){
+										old_type = attachment_type;
+									}
+									if(i!=0 && old_type !=  attachment_type){
+										line_break = "<br>";
+									}
+									
+									if(attachment_type==1){
+										//Image
+										html += line_break+'<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(attachment_type==2){
+										//Video
+										html +='<div class="row pull-right text-right"><video style="float:right;margin-right:10px;" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(attachment_type==3){
+										//Audio
+										html +='<div class="row pull-right text-right"><audio style="float:right;margin-right:10px;" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p class="right" style="word-wrap: break-word;">'+message["admin_atachment"]+'</p></a>';
+									}
 								}
-								else if(message["attachment_type"]==2){
-									//Video
-									html +='<video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+message["admin_atachment"]+'" type="video/mp4"></video>';
-								}
-								else if(message["attachment_type"]==3){
-									//Audio
-									html +='<audio controls><source src="'+msg_image_url+'/'+message["admin_atachment"]+'" type="audio/mpeg"></audio>';
-								}
-								else{
-									//Other Files
-									html += '<a href="'+msg_image_url+'/'+message["admin_atachment"]+'" download><p style="word-wrap: break-word;">'+message["admin_atachment"]+'</p></a>';
-								}
+								html+="</div>";
 							}
-
 							html += '</li>';
 							if (message["category_name"]!=null && message["category_name"]!="") {
-								mc = '<div class="btn btn-xs btn-info disabled" style="font-size:8px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
+								mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
 							}
 							else{
 								mc = "";
 							}
-							html += '<span class="time_date_sent"> '+message["msg_date"]+' '+mc+'</span>';
-
-
+							html += '<span class="time_date_sent">'+mc+' '+message["msg_date"]+'<a href="javascript:void(0)" onclick="removeMessage()" class="margin-left-2 text-danger"><i class="clip-remove"></i></a><a href="javascript:void(0)" onclick="editMessage()" class="margin-left-2"><i class="fa fa-pencil"></i></a></span>';
 						}
 						else if( (message["app_user_message"]!=null && message["app_user_message"]!="") || ( message["is_attachment_app_user"]!=""&& message["is_attachment_app_user"]!=null ) ){
-
-
 							html += '<li class="receive_msg">';
-							html += '<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />';
-
+							
+							if($.trim(message['user_profile_image']) == "null" || $.trim(message['user_profile_image']) == ""  ) appuser_image = "no-user-image.png";
+							else  									 	appuser_image = message['user_profile_image'];
+							html += '<img style="width:25px;height:25px;"  src="'+app_user_profile_url+"/"+appuser_image+'" alt="" />';
+							
 							if (message["app_user_message"]!=null && message["app_user_message"]!="") {
-								html += '<p>'+message["app_user_message"]+'</p>';
+								html += '<p class="left">'+message["app_user_message"]+'</p><br>';
 							}
 							if( (message["app_user_message"]!=null && message["app_user_message"]!="")&& (message["is_attachment_app_user"]==1) ){
-								html+="<br>";
+								html+="";
 							}
-
 							if(message["is_attachment_app_user"]==1){
-								if(message["attachment_type"]==1){
-									//Image
-									html += '<img  class="zoomImg" style="height:150px !important; width:180px !important;border-top-left-radius: 25px !important; border-top-right-radius: 0px !important; border-bottom-left-radius: 20px !important; border-bottom-right-radius: 20px !important;" src="'+msg_image_url+'/'+message["app_user_attachment"]+'" alt="">';
-								 //onclick="zoomImg()"
+								html+="<div class='attachment_div' style=' display: inline-block;  padding:10px 15px 10px 40px;  max-width: 80%;  line-height: 130%;'>";
+								attachements = message["app_user_attachment"].split(',');
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];	
+									
+									if(message["attachment_type"]==1){
+										//Image
+										html += '<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(message["attachment_type"]==2){
+										//Video
+										html +='<div class="row text-left"><video style="float:left; margin-left:10px" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(message["attachment_type"]==3){
+										//Audio
+										html +='<div class="row text-left"><audio style="float:left; margin-left:10px" width="280"  controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p class="left" style="word-wrap: break-word;">'+attachment_name+'</p></a>';
+									}
 								}
-								else if(message["attachment_type"]==2){
-									//Video
-									html +='<video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+message["app_user_attachment"]+'" type="video/mp4"></video>';
-								}
-								else if(message["attachment_type"]==3){
-									//Audio
-									html +='<audio controls><source src="'+msg_image_url+'/'+message["app_user_attachment"]+'" type="audio/mpeg"></audio>';
-								}
-								else{
-									//Other Files
-									html += '<a href="'+msg_image_url+'/'+message["app_user_attachment"]+'" download><p style="word-wrap: break-word;">'+message["app_user_attachment"]+'</p></a>';
-								}
-
+								html+="</div>";
 							}
-							html += '<span class="time_date">'+message["msg_date"]+'</span>';
+							
+							if (message["category_name"]!=null && message["category_name"]!="") {
+								mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
+							}
+							else{
+								mc = "";
+							}
+							 
+							html += '<span class="time_date">'+'<a href="javascript:void(0)" onclick="replyMessage()" class="margin-right-2 text-success"><i class="fa fa-mail-reply"></i></a>'+message["msg_date"]+' '+mc+'</span>';
+							
+							
+							
 							html += '</li>';
 
 							// 11:01 AM    |    June 9
@@ -360,7 +393,7 @@ $(document).ready(function () {
 					$("#app_user_image").attr('src', app_user_profile_url+"/no-user-image.png");
 				}
 
-				$("#load_more_message").html('<button onclick="limitIncrease('+app_user_name["id"]+');" style="margin-right: 10px;" type="button" class="btn btn-xs btn-warning">Load Old Message</button>');
+				$("#load_more_message").html('<button onclick="limitIncrease('+app_user_name["id"]+');" style="margin-right: 10px;" type="button" class="btn btn-xs btn-warning">Load More</button>');
 				$("#app_user_id").val(app_user_name['id']);
 				if (number_of_msg==10) {
 					$(".messages").animate({ scrollTop: $(document).height() }, "fast");
@@ -381,7 +414,7 @@ $(document).ready(function () {
 
 
 	searchAppUsers = function searchAppUsers(){
-		event.preventDefault();
+		//event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
@@ -402,15 +435,15 @@ $(document).ready(function () {
 						$.each(app_users, function(i,row){
 							html+='<li class="contact">';
 							html+='<div class="wrap">';
-							//html+='<span class="contact-status busy"></span>';
-							html+='<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />';
+							if($.trim(row['user_profile_image']) == "null" || $.trim(row['user_profile_image']) == ""  ) appuser_image = "no-user-image.png";
+							else  				appuser_image = row['user_profile_image'];
+							html += '<img  src="'+app_user_profile_url+"/"+appuser_image+'" alt="" />';
 							html+='<div class="meta">';
 							html+='<p onclick="loadMessage('+row["id"]+','+number_of_msg+')" class="name">'+row["name"]+'</p>';
 							//html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
 							html+='</div>';
 							html+='</div>';
 							html+='</li>';
-
 						});
 					}
 				$("#app_user_show").html(html);
@@ -466,29 +499,15 @@ $(document).ready(function () {
 			});
 		}
 	}
-
+/*
 	$(window).on('keydown', function(e) {
+		alert('enter')
 		if (e.which == 13) {
 			newMsgSent();
 			return false;
 		}
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
@@ -536,7 +555,6 @@ $(document).ready(function () {
 	showProfile = function showProfile(id){
 		$("#app_user_id").val();
         $("#app_user_id_profile").val(id)
-        //alert(id)
 		$.ajax({
 			url: url+"/message/view-app-user/"+id,
 			success: function(response){
@@ -610,12 +628,20 @@ $(document).ready(function () {
 			url: url+"/message/get-message-category",
 			success: function(response){
 				var data = JSON.parse(response);
-				var option = "";
+				var option = '<option value="">&nbsp;</option>';
 				$.each(data, function(i,data){
 					option += "<option value='"+data['id']+"'>"+data['category_name']+"</option>";
 				});
 				$("#message_category").append(option)
                 $('#message_category_group').html(option)
+				$("#message_category_group").select2({
+				    placeholder: "Categoty/Topic",
+					allowClear: true
+				});
+				$("#message_category").select2({
+				    placeholder: "Categoty/Topic",
+					allowClear: true
+				});
 			}
 		});
 
@@ -681,18 +707,10 @@ $(document).ready(function () {
 					    if($('#group_msg_group_id').val() == null){
                             $('#group_msg_group_id').val(row["id"])
                         }
-						html+='<li onclick="loadGroupMessage('+row["id"]+','+number_of_msg+')" class="contact ">';
+						html+='<li onclick="loadGroupMessage('+row["id"]+','+number_of_msg+')" class="contact border-bottom-message">';
 						html+='<div class="wrap">';
-						html+='<span class="contact-status online"></span>';
-						if (row["user_profile_image"]!=null && row["user_profile_image"]!="") {
-							html+='<img src="'+app_user_profile_url+'/'+row["user_profile_image"]+'" alt="" />';
-						}
-						else{
-							html+='<img src="'+app_user_profile_url+'/no-user-image.png" alt="" />';
-						}
 						html+='<div class="meta">';
-						html+='<p class="name">'+row["group_name"]+'</p>';
-						//html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
+						html+='<p class="name">'+row["group_name"]+'</p>';						
 						html+='</div>';
 						html+='</div>';
 						html+='</li>';
@@ -727,10 +745,9 @@ $(document).ready(function () {
 					if(!jQuery.isEmptyObject(app_users)){
 						var html = "";
 						$.each(app_users, function(i,row){
-							html+='<li class="contact">';
+							html+='<li class="contact border-bottom-message">';
 							html+='<div class="wrap">';
 							//html+='<span class="contact-status busy"></span>';
-							html+='<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />';
 							html+='<div class="meta">';
 							html+='<p onclick="loadGroupMessage('+row["id"]+','+number_of_msg+')" class="name">'+row["group_name"]+'</p>';
 							//html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
@@ -758,7 +775,6 @@ $(document).ready(function () {
 	//Group Message sent
 	newGroupMessageSent = function newGroupMessageSent(){
 
-        //alert('2')
 		var formData = new FormData($('#sent_message_to_group')[0]);
 		if(( $.trim($('#admin_message').val()) != "" || $.trim($('#group_msg_attachment').val()) != "" ) && $.trim($('#group_id').val()) != ""){
 
@@ -790,7 +806,6 @@ $(document).ready(function () {
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		//alert('1')
 		newGroupMessageSent();
         $('#reply_msg_id').val(null)
         $('#reply_msg').html('')
@@ -804,13 +819,13 @@ $(document).ready(function () {
 	});
 
 	reply_message = (id, msg) =>{
-	    //alert(id)
+
         $('#reply_msg_id').val(id)
         $('#reply_msg').html(msg)
     }
 
     view_app_user = (id) =>{
-	    alert(id)
+	    //alert(id)
     }
 
     edit_message = (id, msg) =>{
@@ -819,16 +834,20 @@ $(document).ready(function () {
 
     }
 
+    set_time_out_fn = function set_time_out_fn(user_group_id, number_of_msg){
+        setTimeout(function(){
+            loadGroupMessage(user_group_id, number_of_msg);
+            set_time_out_fn(user_group_id, number_of_msg);
+        }, 100000);
+    }
 
 
-	loadGroupMessage = function loadGroupMessage(user_group_id, number_of_msg){//
-	    //alert(user_group_id)
+	loadGroupMessage = function loadGroupMessage(user_group_id, number_of_msg, user_category_id){
 
-	    //var group_id = user_group_id;
         $('#reply_msg_id').val(null)
         $('#reply_msg').html('')
 		$("#search_app_user_group").val("");
-		event.preventDefault();
+		//event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
@@ -836,7 +855,12 @@ $(document).ready(function () {
 		});
 		let group_id = user_group_id;
 		var msg_no = number_of_msg;
-		var msg_cat = $('#message_category_group').val();
+		if(user_category_id){
+            var msg_cat = user_category_id;
+        }
+		else {
+            var msg_cat = $('#message_category_group').val();
+        }
 
 		$.ajax({
 			url: url+'/message/load-group-message',
@@ -859,11 +883,8 @@ $(document).ready(function () {
 				var img_id="";
 				var mc;
 				//Messages
-
 				var message_body = "";
 				if(!jQuery.isEmptyObject(message)){
-
-
 					$.each(message, function(i,message){
                         $('#msg_group_name').html(message['category_name'])
 
@@ -875,8 +896,10 @@ $(document).ready(function () {
                             }
 						    html += '<li class="sent_msg">';
 
-							html += '<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />';
+							if($.trim(message['admin_image']) == "null" || $.trim(message['admin_image']) == ""  ) admin_image = "no-user-image.png";
+							else  									 	admin_image = message['admin_image'];
 
+							html += '<img style="width:25px;height:25px; cursor:pointer" title="'+message['admin_name']+'" src="'+admin_image_url+"/"+admin_image+'" alt="" />';
 
 							if (message["admin_message"]!=null && message["admin_message"]!="") {
 							    tem_msg = "'"+message['admin_message']+"'";
@@ -888,29 +911,34 @@ $(document).ready(function () {
 							}
 
 							if(message["is_attachment"]==1){
-
-								if(message["attachment_type"]==1){
-									//Image
-									html += '<img  class="zoomImg" style="height:150px !important; width:180px !important; border-top-left-radius: 25px !important; border-top-right-radius: 0px !important; border-bottom-left-radius: 20px !important; border-bottom-right-radius: 20px !important;" src="'+msg_image_url+'/'+message["admin_atachment"]+'" alt="">';
-								 //onclick="zoomImg()"
-								}
-								else if(message["attachment_type"]==2){
-									//Video
-									html +='<video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+message["admin_atachment"]+'" type="video/mp4"></video>';
-								}
-								else if(message["attachment_type"]==3){
-									//Audio
-									html +='<audio controls><source src="'+msg_image_url+'/'+message["admin_atachment"]+'" type="audio/mpeg"></audio>';
-								}
-								else{
-									//Other Files
-									html += '<a href="'+msg_image_url+'/'+message["admin_atachment"]+'" download><p style="word-wrap: break-word;">'+message["admin_atachment"]+'</p></a>';
+								attachements = message["admin_atachment"].split(',');
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];
+									if(attachment_type==1){
+										//Image
+										html += '<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(attachment_type==2){
+										//Video
+										html +='<div class="row pull-right text-right"><video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(attachment_type==3){
+										//Audio
+										html +='<div class="row pull-right text-right"><audio controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p style="word-wrap: break-word;">'+message["admin_atachment"]+'</p></a>';
+									}
 								}
 							}
 
 							html += '</li>';
 							if (message["category_name"]!=null && message["category_name"]!="") {
-								mc = '<div class="btn btn-xs btn-info disabled" style="font-size:8px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
+								mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
 							}
 							else{
 								mc = "";
@@ -940,30 +968,35 @@ $(document).ready(function () {
 							}
 
 							if(message["is_attachment_app_user"]==1){
-								if(message["attachment_type"]==1){
-									//Image
-									html += '<img  class="zoomImg" style="height:150px !important; width:180px !important;border-top-left-radius: 25px !important; border-top-right-radius: 0px !important; border-bottom-left-radius: 20px !important; border-bottom-right-radius: 20px !important;" src="'+msg_image_url+'/'+message["app_user_attachment"]+'" alt="">';
-								 //onclick="zoomImg()"
+								attachements = message["app_user_attachment"].split(',');
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];	
+									
+									if(message["attachment_type"]==1){
+										//Image
+										html += '<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(message["attachment_type"]==2){
+										//Video
+										html +='<div class="row text-left"><video style="float:left" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(message["attachment_type"]==3){
+										//Audio
+										html +='<div class="row text-left"><audio style="float:left" width="280"  controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p style="word-wrap: break-word;">'+attachment_name+'</p></a>';
+									}
 								}
-								else if(message["attachment_type"]==2){
-									//Video
-									html +='<video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+message["app_user_attachment"]+'" type="video/mp4"></video>';
-								}
-								else if(message["attachment_type"]==3){
-									//Audio
-									html +='<audio controls><source src="'+msg_image_url+'/'+message["app_user_attachment"]+'" type="audio/mpeg"></audio>';
-								}
-								else{
-									//Other Files
-									html += '<a href="'+msg_image_url+'/'+message["app_user_attachment"]+'" download><p style="word-wrap: break-word;">'+message["app_user_attachment"]+'</p></a>';
-								}
-
 							}
 							html += '<span class="time_date">'+message["msg_date"]+'</span><br><br><br>';
 							html += '</li>';
 
 							// 11:01 AM    |    June 9
-
 						}
 						message_body = html+message_body;
 
@@ -981,7 +1014,7 @@ $(document).ready(function () {
 					$("#app_user_image").attr('src', app_user_profile_url+"/no-user-image.png");
 				}
 
-				$("#load_more_message").html('<button onclick="limitIncrease('+app_user_name["id"]+');" style="margin-right: 10px;" type="button" class="btn btn-xs btn-warning">Load Old Message</button>');
+				$("#load_more_message").html('<button onclick="limitIncrease('+app_user_name["id"]+');" style="margin-right: 10px;" type="button" class="btn btn-xs btn-warning">Load More</button>');
 				if (number_of_msg==10) {
 					$(".messages").animate({ scrollTop: $(document).height() }, "fast");
 				}
@@ -994,23 +1027,47 @@ $(document).ready(function () {
 			$("#load_zoom_img").attr('src',image_src);
 		});
 
+        set_time_out_fn(user_group_id, number_of_msg);
+
     }
 
+    $('#admin_message').click(function () {
+        group_id =$('#group_id').val()
+        category_id = $('#category_id').val()
 
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        if(category_id>0 && group_id>0){
+            $.ajax({
+                url: url+"/message/admin-group-message-seen/"+group_id+"/"+category_id,
+                type:'GET',
+                async:false,
+                cache:false,
+                contentType:false,
+                processData:false,
+                success: function(data){
 
-    //alert($('#group_msg_group_id').val())
+                }
+            });
+        }else if($('#app_user_id').val()>0){
+            $.ajax({
+                url: url+"/message/admin-message-seen/"+$('#app_user_id').val(),
+                type:'GET',
+                async:false,
+                cache:false,
+                contentType:false,
+                processData:false,
+                success: function(data){
+                    // alert(3)
 
-    setInterval(loadGroupMessage($('#group_msg_group_id').val(),10),1000)
-
-
-
-
-
-
-
-
-
-
+                }
+            });
+        }
+        newMessages()
+    })
 
 
     //Clear form
@@ -1030,7 +1087,268 @@ $(document).ready(function () {
 
 
 
+    if(localStorage.getItem('app_user_id')){
+        loadMessage(localStorage.getItem('app_user_id'), number_of_msg)
+        localStorage.removeItem('app_user_id')
+    }
 
+    if(localStorage.getItem('group_id')){
+        $('#message_category_group').val(localStorage.getItem('category_id'))
+        loadGroupMessage(localStorage.getItem('group_id'), number_of_msg, localStorage.getItem('category_id'))
+        localStorage.removeItem('group_id')
+        localStorage.removeItem('category_id')
+
+    }
+
+
+    // Javascript for category message
+
+
+    loadCategoryMessage = (user_category_id, number_of_msg) =>{
+        //alert('group')
+
+        $('#reply_msg_id').val(null)
+        $('#reply_msg').html('')
+        $("#search_app_user_group").val("");
+        //event.preventDefault();
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: url+'/message/load-category-message',
+            type:'POST',
+            data:{
+                category:user_category_id,
+                msg_no:number_of_msg,
+
+            },
+            async:false,
+            success: function(response){
+
+                $('#category_id').val(user_category_id)
+
+                var response = JSON.parse(response);
+
+                var message = response['message'];
+                var app_user_name = response['app_user_name'];
+                var img_id="";
+                var mc;
+                //Messages
+
+                var message_body = "";
+                if(!jQuery.isEmptyObject(message)){
+
+
+                    $.each(message, function(i,message){
+                        $('#msg_group_name').html(message['category_name'])
+
+                        html = "";
+
+                        if( (message["admin_id"] != null && message["admin_id"] != "" ) && ((message["admin_message"]!=null && message["admin_message"]!="") || ( message["is_attachment"]!=""&& message["is_attachment"]!=null )) ){
+                            if(message["replied"]){
+                                html+='<li class="sent_msg"><p class="replied_message_p" ">'+message['replied']+'</p></li>  ';
+                            }
+                            html += '<li class="sent_msg">';
+
+                            html += '<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />';
+
+
+                            if (message["admin_message"]!=null && message["admin_message"]!="") {
+                                tem_msg = "'"+message['admin_message']+"'";
+
+                                html += '<p onclick="edit_message('+message["id"]+','+tem_msg+')"> '+message["admin_message"]+'    <i onclick="reply_message('+message["id"]+','+tem_msg+')" style="font-size:16px" class="fa">&#xf112;</i></p><br><br><br>';
+
+                            }else{
+                                html+="<br><br>";
+                            }
+
+							if(message["is_attachment"]==1){
+								attachements = message["admin_atachment"].split(',');
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];
+									if(attachment_type==1){
+										//Image
+										html += '<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(attachment_type==2){
+										//Video
+										html +='<div class="row pull-right text-right"><video style="float:right" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(attachment_type==3){
+										//Audio
+										html +='<div class="row pull-right text-right"><audio controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p style="word-wrap: break-word;">'+message["admin_atachment"]+'</p></a>';
+									}
+								}
+							}
+
+                            html += '</li>';
+                            if (message["category_name"]!=null && message["category_name"]!="") {
+                                mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">'+message["category_name"]+'</div>';
+                            }
+                            else{
+                                mc = "";
+                            }
+                            html += '<span class="time_date_sent"> '+message["msg_date"]+' '+mc+'</span>';
+
+
+                        }
+                        else if( (message["app_user_message"]!=null && message["app_user_message"]!="") || ( message["is_attachment_app_user"]!=""&& message["is_attachment_app_user"]!=null ) ){
+
+                            if(message["replied"]){
+                                html+='<li class="sent_msg"><p class="replied_message_p" ">'+message['replied']+'</p></li>  ';
+                            }
+                            html += '<li class="receive_msg">';
+                            html += '<img src="http://emilcarlsson.se/assets/mikeross.png" onclick = "showProfile('+message["app_user_id"]+')"  alt="" />';
+
+                            if (message["app_user_message"]!=null && message["app_user_message"]!="") {
+                                //tem_msg = "'"+message['app_user_message']+"'";
+                                tem_msg = "'"+message['app_user_message']+"'";
+
+                                html += '<p> '+message["app_user_message"]+'    <i onclick="reply_message('+message["id"]+','+tem_msg+')" style="font-size:16px" class="fa">&#xf112;</i></p>';
+
+                                //html += "<p>"+message['app_user_message']+"    <i onclick='reply_message("+message['id']+","+tem_msg+")' style='font-size:16px' class='fa'>&#xf112;</i></p>";
+                            }
+                            if( (message["app_user_message"]!=null && message["app_user_message"]!="")&& (message["is_attachment_app_user"]==1) ){
+                                html+="<br>";
+                            }
+
+							if(message["is_attachment_app_user"]==1){
+								attachements = message["app_user_attachment"].split(',');
+								for(var i=0; i<attachements.length; i++){
+									var att_type 		= (attachements[i].split("*"));
+									var attachment_type = att_type[1];
+									var attachment_name	= att_type[0];	
+									
+									if(message["attachment_type"]==1){
+										//Image
+										html += '<img  class="zoomImg" style="height:80px !important; width:auto !important;  border-radius:0; cursor:pointer" src="'+msg_image_url+'/'+attachment_name+'" alt="">';
+									 //onclick="zoomImg()"
+									}
+									else if(message["attachment_type"]==2){
+										//Video
+										html +='<div class="row text-left"><video style="float:left" width="280" controls><source src="'+msg_image_url+'/'+attachment_name+'" type="video/mp4"></video></div>';
+									}
+									else if(message["attachment_type"]==3){
+										//Audio
+										html +='<div class="row text-left"><audio style="float:left" width="280"  controls><source src="'+msg_image_url+'/'+attachment_name+'" type="audio/mpeg"></audio></div>';
+									}
+									else{
+										//Other Files
+										html += '<a href="'+msg_image_url+'/'+attachment_name+'" download><p style="word-wrap: break-word;">'+attachment_name+'</p></a>';
+									}
+								}
+							}
+                            html += '<span class="time_date">'+message["msg_date"]+'</span><br><br><br>';
+                            html += '</li>';
+
+                            // 11:01 AM    |    June 9
+
+                        }
+                        message_body = html+message_body;
+
+                    });
+
+                }
+                loadAppUserGroup();
+                $(".message_body").html(message_body);
+                $("#app_user_name").html(app_user_name['category_name']);
+
+                if (app_user_name['user_profile_image']!=null && app_user_name['user_profile_image']!="") {
+                    $("#app_user_image").attr('src', app_user_profile_url+"/"+app_user_name['user_profile_image']);
+                }
+                else{
+                    $("#app_user_image").attr('src', app_user_profile_url+"/no-user-image.png");
+                }
+
+                $("#load_more_message").html('<button onclick="limitIncrease('+app_user_name["id"]+');" style="margin-right: 10px;" type="button" class="btn btn-xs btn-warning">Load More</button>');
+                if (number_of_msg==10) {
+                    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+                }
+            }
+        });
+
+        $(".zoomImg").click(function(){
+            var image_src = $(this).attr('src');
+            $("#modalIMG").modal();
+            $("#load_zoom_img").attr('src',image_src);
+        });
+
+        //set_time_out_fn(user_group_id, number_of_msg);
+
+    }
+
+
+    $.ajax({
+        url: url+"/message/get-message-category",
+        success: function(response){
+            var response = JSON.parse(response);
+            if(!jQuery.isEmptyObject(response)){
+                var html = '<div class="msg_auto_load">';
+                $.each(response, function(i,row){
+
+                    html+='<li onclick="loadCategoryMessage('+row["id"]+','+number_of_msg+')" class="contact ">';
+                    html+='<div class="wrap">';
+                    
+
+                    html+='<img src="'+app_user_profile_url+'/no-user-image.png" alt="" />';
+
+                    html+='<div class="meta">';
+                    html+='<p class="name">'+row["category_name"]+'</p>';
+                    //html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
+                    html+='</div>';
+                    html+='</div>';
+                    html+='</li>';
+                    html+='</div>';
+
+                });
+            }
+            $("#category_show").html(html);
+        }
+    });
+
+
+
+    $("#search_message_category").keyup(function(){
+
+        key = $('#search_message_category').val()
+        $.ajax({
+            url: url+"/message/search-message_category/"+key,
+            success: function(response){
+                var response = JSON.parse(response);
+                if(!jQuery.isEmptyObject(response)){
+                    var html = '<div class="msg_auto_load">';
+                    $.each(response, function(i,row){
+
+                        html+='<li onclick="loadCategoryMessage('+row["id"]+')" class="contact ">';
+                        html+='<div class="wrap">';
+                        
+
+                        html+='<img src="'+app_user_profile_url+'/no-user-image.png" alt="" />';
+
+                        html+='<div class="meta">';
+                        html+='<p class="name">'+row["category_name"]+','+number_of_msg+'</p>';
+                        //html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
+                        html+='</div>';
+                        html+='</div>';
+                        html+='</li>';
+                        html+='</div>';
+
+                    });
+                }
+                $("#category_show").html(html);
+            }
+        });
+    });
 
 
 

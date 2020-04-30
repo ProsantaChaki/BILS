@@ -38,7 +38,7 @@
     <!-- end: MAIN CSS -->
     <link href="{{ asset('assets/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset('assets/plugins/bootstrap-modal/css/bootstrap-modal.css') }}" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/build/summernote.css') }}">
+
     <!--SweetalertCSS-->
     <link rel="stylesheet" href="{{asset('assets/plugins/sweetalert/sweetalert2.min.css')}}" type="text/css" />
     <!-- Form elements-->
@@ -60,7 +60,7 @@
     
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/image-uploader.min.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/jquery-editable.css') }}"/>
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">-->
     {{-- Auto Load css --}}
     <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.css') }}" rel="stylesheet">
 	  <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
@@ -76,94 +76,63 @@
 </head>
 <!-- end: HEAD -->
 <!-- start: BODY -->
-<body>
 
+<body class="footer-fixed">
+		<!-- start: HEADER -->
+		@include('frontend.layout.header')
+		<!-- end: HEADER -->
+		<!-- start: MAIN CONTAINER -->
+		<div class="main-container">
+			<div class="navbar-content">
+				<!-- start: SIDEBAR -->
+				 @include('frontend.layout.sidebar')
+				<!-- end: SIDEBAR -->
+			</div>
+			<!-- start: PAGE -->
+			<div class="main-content">
+				<!-- start: PANEL CONFIGURATION MODAL FORM -->
+				<!--<div class="modal fade" id="panel-config" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									&times;
+								</button>
+								<h4 class="modal-title">Panel Configuration</h4>
+							</div>
+							<div class="modal-body">
+								Here will be a configuration form
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									Close
+								</button>
+								<button type="button" class="btn btn-primary">
+									Save changes
+								</button>
+							</div>
+						</div>
 
-<!-- start: HEADER -->
-@include('frontend.layout.header')
-<!-- end: HEADER -->
-<!-- start: MAIN CONTAINER -->
-<div class="main-container">
-    <div class="navbar-content">
-        <!-- start: SIDEBAR -->
-        @include('frontend.layout.sidebar')
-		
-        <!-- end: SIDEBAR -->
-    </div>
-    <!-- start: PAGE -->
-    <div class="main-content">
-        <!-- end: SPANEL CONFIGURATION MODAL FORM -->
-        <div class="container">
-            <!-- start: PAGE HEADER -->
-			{{-- @include('frontend.layout.breadcrumb')--}}
-            <!-- end: PAGE HEADER -->
-            <!-- start: PAGE CONTENT -->
-            @yield('content')
-            <!-- end: PAGE CONTENT-->
-        </div>
-    </div>
-    <!-- end: PAGE -->
-</div>
-<!-- end: MAIN CONTAINER -->
-<!-- start: FOOTER -->
-<div class="footer clearfix">
-    <div class="footer-inner">
-        &copy; Copyright {{date('Y')}} .All Rights Reserved. Developed by <a href="https://mbrotherssolution.com" target="_blank">Mbrothers Solution.</a>
-    </div>
-    <div class="footer-items">
-        <span class="go-top"><i class="clip-chevron-up"></i></span>
-    </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="admin_user_view" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-content">
-        <div class="modal-body">
-            <div id="order-div">
-                <div class="title text-center">
-                    <h4 class="text-info" id="modal_title"></h4><hr>
-                </div>
-                <div class="done_registration ">                                
-                    <div class="doc_content">
-                        <div class="col-md-12">
-                            <div class="" style="text-align:left;">
-                                <div class="byline">
-                                    <span id="modal_body"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>                                  
-                </div>                          
-            </div>
-            
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-    </div>
-     
-   
-</div>
-{{-- End Modal --}}
-
-
-
-
-<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="modalIMG" role="dialog" tabindex="-1">
-    <div class="modal-dialog" role="document" style="width:100% !important;">
-        <div class="modal-content">
-            
-                <img id="load_zoom_img" src="" alt="" style="height: 410px;width: 100%;">
-            
-            <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
-</div>
-
-<!-- end: FOOTER -->
+					</div>
+				</div>-->
+				<!-- /.modal -->
+				<!-- end: SPANEL CONFIGURATION MODAL FORM -->
+				<div class="container padding-left-0 padding-right-0">					
+					@yield('content')
+				</div>
+			</div>
+			<!-- end: PAGE -->
+		</div>
+		<!-- end: MAIN CONTAINER -->
+		<!-- start: FOOTER -->
+		<!--<div class="footer clearfix">
+			<div class="footer-inner">
+			</div>
+			<div class="footer-items">
+				<span class="go-top"><i class="clip-chevron-up"></i></span>
+			</div>
+		</div>-->
+		<!-- end: FOOTER -->
 
 <!-- start: RIGHT SIDEBAR -->
 		<div id="page-sidebar">
@@ -171,7 +140,7 @@
 			<div class="sidebar-wrapper">
 				<ul class="nav nav-tabs nav-justified" id="sidebar-tab">
 					<li class="active">
-						<a href="#users" role="tab" data-toggle="tab"><i class="fa fa-users"></i></a>
+						<a href="#menus" role="tab" data-toggle="tab"><i class="fa fa-list"></i></a>
 					</li>
 					<li>
 						<a href="#favorites" role="tab" data-toggle="tab"><i class="fa fa-heart"></i></a>
@@ -181,103 +150,65 @@
 					</li>
 				</ul>
 				<div class="tab-content">
-					<div class="tab-pane active" id="users">
-						<div class="users-list">
-							<h5 class="sidebar-title">On-line</h5>
-							<ul class="media-list">
-								<li class="media">
-									<a href="#">
-										<i class="fa fa-circle status-online"></i>
-										<img alt="..." src="assets/images/avatar-2.jpg" class="media-object">
-										<div class="media-body">
-											<h4 class="media-heading">Nicole Bell</h4>
-											<span> Content Designer </span>
-										</div>
-									</a>
-								</li>
-							</ul>
-							<h5 class="sidebar-title">Off-line</h5>
-							<ul class="media-list">
-								<li class="media">
-									<a href="#">
-										<img alt="..." src="assets/images/avatar-6.jpg" class="media-object">
-										<div class="media-body">
-											<h4 class="media-heading">Nicole Bell</h4>
-											<span> Content Designer </span>
-										</div>
-									</a>
-								</li>
-								
-							</ul>
-						</div>
-						<div class="user-chat">
-							<div class="sidebar-content">
-								<a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
-							</div>
-							<div class="user-chat-form sidebar-content">
-								<div class="input-group">
-									<input type="text" placeholder="Type a message here..." class="form-control">
-									<div class="input-group-btn">
-										<button class="btn btn-success" type="button">
-											<i class="fa fa-chevron-right"></i>
-										</button>
-									</div>
-								</div>
-							</div>
-							<ol class="discussion sidebar-content">
-								<li class="other">
-									<div class="avatar">
-										<img src="assets/images/avatar-4.jpg" alt="">
-									</div>
-									<div class="messages">
-										<p>
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-										</p>
-										<span class="time"> 51 min </span>
-									</div>
-								</li>
-								
-							</ol>
-						</div>
+					<div class="tab-pane active" id="menus">
+						<ul class="activities">
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('message')">
+									<i class="clip-bubbles-3 circle-icon circle-green"></i>
+									<span class="desc">{{__('app.Messages')}} </span>
+								</a>
+							</li>
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('notice')">
+									<i class="clip-notification circle-icon "></i>
+									<span class="desc">{{__('app.Notices')}}  </span>
+								</a>
+							</li>
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('publication')">
+									<i class="clip-file circle-icon circle-yellow"></i>
+									<span class="desc">{{__('app.Publications')}}</span>
+								</a>
+							</li>
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('course')">
+									<i class="clip-book circle-icon circle-purple"></i>
+									<span class="desc">{{__('app.Courses')}}</span>
+								</a>
+							</li>
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('survey')">
+									<i class="clip-users-2 circle-icon circle-orange"></i>
+									<span class="desc">{{__('app.Surveys')}}</span>
+								</a>
+							</li>
+							<li>
+								<a class="activity" href="javascript:void(0)" onClick="loadPage('notification')">
+									<i class="clip-notification-2 circle-icon circle-bricky"></i>
+									<span class="desc">{{__('app.Notifications')}}</span>
+								</a>
+							</li>
+						</ul>
 					</div>
 					<div class="tab-pane" id="favorites">
 						<div class="users-list">
-							<h5 class="sidebar-title">Favorites</h5>
+							<h5 class="sidebar-title">Pan2</h5>
 							<ul class="media-list">
 								<li class="media">
 									<a href="#">
 										<img alt="..." src="assets/images/avatar-7.jpg" class="media-object">
 										<div class="media-body">
-											<h4 class="media-heading">Nicole Bell</h4>
-											<span> Content Designer </span>
+											<h4 class="media-heading">Momit</h4>
+											<span> Developer </span>
 										</div>
 									</a>
 								</li>
 								
 							</ul>
 						</div>
-						<div class="user-chat">
-							<div class="sidebar-content">
-								<a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
-							</div>
-							<ol class="discussion sidebar-content">
-								<li class="other">
-									<div class="avatar">
-										<img src="assets/images/avatar-4.jpg" alt="">
-									</div>
-									<div class="messages">
-										<p>
-											Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-										</p>
-										<span class="time"> 51 min </span>
-									</div>
-								</li>
-								
-							</ol>
-						</div>
 					</div>
 					<div class="tab-pane" id="settings">
-						<h5 class="sidebar-title">General Settings</h5>
+						<h5 class="sidebar-title">Pan3</h5>
 						<ul class="media-list">
 							<li class="media">
 								<div class="checkbox sidebar-content">
@@ -395,8 +326,30 @@
 		Animation.init();
 	});
 
+	loadpageFunctionality = function loadpageFunctionality(){
+
+		Main.init();
+		//loadPage();	
+		$('.hometab').on('click', function (){
+			page = $(this).attr('id');
+			loadPage(page)
+		})
+			
+		if($(".sb-toggle").hasClass("open")) {
+			$(this).not(".sidebar-toggler ").find(".fa-indent").removeClass("fa-indent").addClass("fa-outdent");
+			$(".sb-toggle").removeClass("open")
+			$("#page-sidebar").css({
+				right: -$("#page-sidebar").outerWidth()
+			});
+		}
+		//alert('before  height');
+		
+	}	
+	
+
 // page name: message notice course survey publication notification
     loadPage = function loadPage(pageName) {
+		$('.navbar-toggle').trigger('click');
 		// load a ajax loader
 		$.ajax({
 			type: "GET",
@@ -404,8 +357,32 @@
 			cache: false,
 			contentType: false,
 			processData: false,
+			beforeSend: function( xhr ) {
+				//$("#load-content").fadeOut('slow');
+				$('#load-content').block({
+					overlayCSS: {
+						backgroundColor: '#fff'
+					},
+					message: '<img src={{ asset('assets/images/loading.gif') }} /> Loading...',
+					css: {
+						border: 'none',
+						color: '#333',
+						background: 'none'
+					}
+				});
+			},
 			success: function (data) {
-				$(".load-content").html(data);
+				$("#load-content").html(data);
+				if(pageName=='message'){
+					$('.fixed-panel').css('height', $(window).height() - ($('.footer').outerHeight()+$('.navbar-tools').outerHeight()+98));
+				}
+				else{
+					$('.fixed-panel').css('height', $(window).height() - ($('.footer').outerHeight()+$('.navbar-tools').outerHeight()+88));
+				}
+				$('#load-content').unblock();
+				$("#load-content").fadeIn('slow');
+				
+				loadpageFunctionality();
 			},
 			error: function (xhr, textStatus, errorThrown) {
 				console.log("XHR",xhr);
@@ -414,9 +391,13 @@
 			}
 		});
     }
+	$('.hometab').on('click', function (){
+		page = $(this).attr('id');
+		loadPage(page)
+	})
 
 //function to open quick sidebar
-	var runQuickSideBar = function() {
+
 		$(".sb-toggle").on("click", function(e) {
 			if($(this).hasClass("open")) {
 				$(this).not(".sidebar-toggler ").find(".fa-indent").removeClass("fa-indent").addClass("fa-outdent");
@@ -431,9 +412,10 @@
 					right: 0
 				});
 			}
-
 			e.preventDefault();
 		});
+		
+		
 		$("#page-sidebar .media a").on("click", function(e) {
 			//alert($("#page-sidebar").outerWidth())
 			$(this).closest(".tab-pane").css({
@@ -452,11 +434,10 @@
 			minScrollbarLength: 20,
 			suppressScrollX: true
 		});
-		$('#sidebar-tab a').on('shown.bs.tab', function (e) {
-		 
-		 $("#page-sidebar .sidebar-wrapper").perfectScrollbar('update');
+		$('#sidebar-tab a').on('shown.bs.tab', function (e) {		 
+			$("#page-sidebar .sidebar-wrapper").perfectScrollbar('update');
 		});
-	};
+
 	</script>
 </body>
 <!-- end: BODY -->
