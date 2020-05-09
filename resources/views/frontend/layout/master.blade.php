@@ -475,14 +475,10 @@
 <script src="{{ asset('assets/js/ui-animation.js')}}"></script>
 @yield('JScript')
 <script>
-
-  
-   history.pushState(null, null, location.href); 
-   history.back(); 
-   history.forward(); 
-   window.onpopstate = function () { history.go(1); };
-  
-
+	jQuery(document).ready(function() {
+		Main.init();
+		Animation.init();
+	});
 
     $.ajaxSetup({
         headers:{
