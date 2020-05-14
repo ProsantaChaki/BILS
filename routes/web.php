@@ -20,7 +20,7 @@ Route::get('app/language/{lang}',function ($lang){
 });*/
 Route::get('app/language/{lang}',function ($lang){
     try {
-        if (in_array($lang, config('locale.languages'))) {
+        if (in_array($lang,['en','bn'])) {
             Session::put('locale', $lang);
             App::setLocale($lang);
 			$locale = App::getLocale();
