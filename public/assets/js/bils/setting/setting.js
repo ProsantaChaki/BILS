@@ -416,6 +416,7 @@ $(document).ready(function () {
 						}else{
 							success_or_error_msg('#master_message_div',"success","Updated Successful");
 						}
+						$('#publication_category_edit_id').val(null)
 						publication_category.ajax.reload();
 						clear_form();
 						$("#save_publication_category").html('Save');
@@ -452,7 +453,8 @@ $(document).ready(function () {
 				$("#save_publication_category").html('Update');
 				$("#cancle_publication_category").removeClass('hidden');
 				$("#category_name").val(data['category_name']);
-				$("#publication_category_edit_id").val(data['id']);
+                $("#category_name_bn").val(data['category_name_bn']);
+                $("#publication_category_edit_id").val(data['id']);
 				$("#details").val(data['details']);
 				(data['status']=="1")?$("#is_active").iCheck('check'):$("#is_active").iCheck('uncheck');
 			}
@@ -558,8 +560,10 @@ $(document).ready(function () {
 						}
 						course_category.ajax.reload();
 						success_function();
+                        $("#course_category_edit_id").val(null);
 
-					}
+
+                    }
 					$(window).scrollTop();
 				 }
 			});
@@ -593,7 +597,8 @@ $(document).ready(function () {
 				cancle_btn_show();
 				cancle_function();
 				$("#category_name").val(data['category_name']);
-				$("#course_category_edit_id").val(data['id']);
+                $("#category_name_bn").val(data['category_name_bn']);
+                $("#course_category_edit_id").val(data['id']);
 				$("#details").val(data['details']);
 				(data['status']=="1")?$("#is_active").iCheck('check'):$("#is_active").iCheck('uncheck');
 			}
@@ -688,8 +693,10 @@ $(document).ready(function () {
 						}
 						notice_category.ajax.reload();
 						success_function();
+                        $("#notice_category_edit_id").val(null);
 
-					}
+
+                    }
 					$(window).scrollTop();
 				 }
 			});
@@ -723,7 +730,8 @@ $(document).ready(function () {
 				cancle_btn_show();
 				cancle_function();
 				$("#category_name").val(data['category_name']);
-				$("#notice_category_edit_id").val(data['id']);
+                $("#category_name_bn").val(data['category_name_bn']);
+                $("#notice_category_edit_id").val(data['id']);
 				$("#details").val(data['details']);
 				(data['status']=="1")?$("#is_active").iCheck('check'):$("#is_active").iCheck('uncheck');
 			}
@@ -819,8 +827,9 @@ $(document).ready(function () {
 						}
 						survey_category.ajax.reload();
 						success_function();
+                        $("#survey_category_edit_id").val(null);
 
-					}
+                    }
 					$(window).scrollTop();
 				 }
 			});
@@ -854,7 +863,8 @@ $(document).ready(function () {
 				cancle_btn_show();
 				cancle_function();
 				$("#category_name").val(data['category_name']);
-				$("#survey_category_edit_id").val(data['id']);
+                $("#category_name_bn").val(data['category_name_bn']);
+                $("#survey_category_edit_id").val(data['id']);
 				$("#details").val(data['details']);
 				(data['status']=="1")?$("#is_active").iCheck('check'):$("#is_active").iCheck('uncheck');
 			}
@@ -951,6 +961,7 @@ $(document).ready(function () {
                         }
                         message_category.ajax.reload();
                         success_function();
+                        $("#message_category_edit_id").val(null);
 
                     }
                     $(window).scrollTop();
@@ -986,6 +997,7 @@ $(document).ready(function () {
                 cancle_btn_show();
                 cancle_function();
                 $("#category_name").val(data['category_name']);
+                $("#category_name_bn").val(data['category_name_bn']);
                 $("#message_category_edit_id").val(data['id']);
                 $("#details").val(data['details']);
                 (data['status']=="1")?$("#is_active").iCheck('check'):$("#is_active").iCheck('uncheck');

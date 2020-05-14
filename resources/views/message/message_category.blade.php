@@ -22,7 +22,7 @@
 					<div class="col-md-6 col-sm-6 col-xs-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<p class="text-info">Survey Category Management</p>
+								<p class="text-info">Message Category Management</p>
 							</div>
 							<div class="panel-body">
 								<div class="row no-margin-row">
@@ -38,6 +38,12 @@
 														<input type="text" id="category_name" name="category_name" class="form-control col-lg-12"/>
 													</div>
 												</div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-6">Category Name In Bangla<span class="required">*</span></label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-6">
+                                                        <input type="text" id="category_name_bn" name="category_name_bn" class="form-control col-lg-12"/>
+                                                    </div>
+                                                </div>
 												<div class="form-group">
 													<label class="control-label col-md-3 col-sm-3 col-xs-6">Details</label>
 													<div class="col-md-9 col-sm-9 col-xs-6">

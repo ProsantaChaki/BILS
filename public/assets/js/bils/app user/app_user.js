@@ -1,18 +1,18 @@
 // All the user related js functions will be here
-$(document).ready(function () {	
-	
+$(document).ready(function () {
+
 	// for get site url
 	var url = $('.site_url').val();
 
 	/*App User Data Tables*/
-	
+
 	var app_user_datatable = $('#app_user_table').DataTable({
 		destroy: true,
 		"processing": true,
 		"serverSide": false,
 		"ajax": url+"/app-user/app-user-list",
 		"aoColumns": [
-			
+
 			{ mData: 'id', className: "text-center"},
 			{ mData: 'name' },
 			{ mData: 'email'},
@@ -21,22 +21,22 @@ $(document).ready(function () {
 			{ mData: 'actions' , className: "text-center"},
 		],
 	});
-	
-	
+
+
 
 	// icheck for the inputs
 	$('.form').iCheck({
 		checkboxClass: 'icheckbox_flat-green',
 		radioClass: 'iradio_flat-green'
-	});	
+	});
 	$('.flat_radio').iCheck({
 		radioClass: 'iradio_flat-green'
 	});
 
-		
-		
+
+
 	/*-------- App Users Entry And Update Start --------*/
-	$('#save_app_user_info').click(function(event){		
+	$('#save_app_user_info').click(function(event){
 		event.preventDefault();
 		$.ajaxSetup({
 			headers:{
@@ -47,17 +47,17 @@ $(document).ready(function () {
 		var formData = new FormData($('#app_user_form')[0]);
 
 		if($.trim($('#app_user_name').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert Name","#app_user_name");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert Name","#app_user_name");
 		}
 		else if($.trim($('#nid_no').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert NID no","#nid_no");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert NID no","#nid_no");
 		}
 		else if($.trim($('#contact_no').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert contact no","#contact_no");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert contact no","#contact_no");
 		}
 		else if($.trim($('#email').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Select Email","#email");			
-		}	
+			success_or_error_msg('#form_submit_error','danger',"Select Email","#email");
+		}
 		else{
 			$.ajax({
 				url: url+"/app-user/app-user-entry",
@@ -69,9 +69,9 @@ $(document).ready(function () {
 				processData:false,
 				success: function(data){
 					var response = JSON.parse(data);
-				
+
 					if(response['result'] == '0'){
-						var errors	= response['errors'];					
+						var errors	= response['errors'];
 						resultHtml = '<ul>';
 							$.each(errors,function (k,v) {
 							resultHtml += '<li>'+ v + '</li>';
@@ -81,7 +81,7 @@ $(document).ready(function () {
 						//load_data("");
 						//clear_form();
 					}
-					else{				
+					else{
 						success_or_error_msg('#master_message_div',"success","Save Successfully");
 						$("#app_user_list_button").trigger('click');
 						app_user_datatable.ajax.reload();
@@ -94,27 +94,27 @@ $(document).ready(function () {
 						app_user_group_load();
 					}
 					$(window).scrollTop();
-				 }	
+				 }
 			});
-		}	
+		}
 	});
 
 	/*-------- App Users Entry And Update End --------*/
-	
+
 
 	//Clear form
 	$("#clear_button").on('click',function(){
 		clear_form();
-	});	
+	});
 
 
 
 
 
-	
-	
-		
-		
+
+
+
+
 	/*-------- App Users Delete Start --------*/
 	delete_app_user = function delete_app_user(id){
 		var delete_id = id;
@@ -137,7 +137,7 @@ $(document).ready(function () {
 						app_user_datatable.ajax.reload();
 					}
 				});
-			} 
+			}
 			else {
 				swal("Your Data is safe..!", {
 				icon: "warning",
@@ -147,10 +147,10 @@ $(document).ready(function () {
 	}
 	/*-------- App Users Delete End --------*/
 
-		
-	
+
+
 	/*-------- App Users Edit Start --------*/
-	
+
 	app_user_edit = function app_user_edit(id){
 		var edit_id = id;
 		$.ajax({
@@ -191,20 +191,20 @@ $(document).ready(function () {
 						}
 					});
 					html += '</td></tr>';
-				html +='</table>';	
+				html +='</table>';
 			}
 			$('#select_app_user_group').html(html);
 			$('#app_user_form').iCheck({
 					checkboxClass: 'icheckbox_flat-green',
 					radioClass: 'iradio_flat-green'
-			});									
-			
+			});
+
 			$('#app_user_form input#check-all').on('ifChecked', function () {
-				
+
 				$("#app_user_form .tableflat").iCheck('check');
 			});
 			$('#app_user_form input#check-all').on('ifUnchecked', function () {
-				
+
 				$("#app_user_form .tableflat").iCheck('uncheck');
 			});
 
@@ -229,9 +229,9 @@ $(document).ready(function () {
 	});
 	/*-------- Cancle App Users Update End --------*/
 
-	
+
 	//Admin User View
-	 app_user_view = function app_user_view(id){	
+	 app_user_view = function app_user_view(id){
 		var user_id = id;
 		$.ajax({
 			url: url+'/app-user/app-user-view/'+user_id,
@@ -247,7 +247,7 @@ $(document).ready(function () {
 				$("#email_div").html(data['email']);
 				$("#nid_div").html(data['nid_no']);
 				$("#address_div").html(data['address']);
-				
+
 				$("#group_div").html('<b>Groups: </b><span class="badge badge-warning">'+groups[0]["group_name"]+'</span>');
 
 				if (data['remarks']!=null && data['remarks']!="") {
@@ -267,8 +267,8 @@ $(document).ready(function () {
 				}
 				else{
 					$("#status_div").html('<b>Status: </b><span class="badge badge-danger">In-active</span>');
-				} 
-			
+				}
+
 
 
 
@@ -292,24 +292,24 @@ $(document).ready(function () {
 			}
 		});
 	}
-		
 
 
-	
+
+
 
 
 	//App User Group Entry And update With Admin controller
-	$('#save_app_user_group').click(function(event){		
+	$('#save_app_user_group').click(function(event){
 		event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		
+
 		var formData = new FormData($('#save_group_form')[0]);
 		if($.trim($('#group_name').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert Group Name","#group_name");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert Group Name","#group_name");
 		}
 		else{
 			$.ajax({
@@ -321,31 +321,32 @@ $(document).ready(function () {
 				contentType:false,processData:false,
 				success: function(data){
 					var response = JSON.parse(data);
-				
+
 					if(response['result'] == '0'){
-						var errors	= response['errors'];					
+						var errors	= response['errors'];
 						resultHtml = '<ul>';
 							$.each(errors,function (k,v) {
 							resultHtml += '<li>'+ v + '</li>';
 						});
 						resultHtml += '</ul>';
 						success_or_error_msg('#master_message_div',"danger",resultHtml);
-						
+
 						clear_form();
 					}
-					else{				
+					else{
 						success_or_error_msg('#master_message_div',"success","Save Successfully");
-						
+
 						app_user_group.ajax.reload();
 						clear_form();
+						$('#edit_id').val(null)
 						$("#cancle_admin_user_group_button").addClass('hidden');
 						$(".save").html('Save');
 
 					}
 					$(window).scrollTop();
-				 }	
+				 }
 			});
-		}	
+		}
 	})
 
 
@@ -355,7 +356,7 @@ $(document).ready(function () {
 		"processing": true,
 		"serverSide": false,
 		"ajax": url+"/app-user/app-user-group-list",
-		"aoColumns": [ 
+		"aoColumns": [
 			{ mData: 'id'},
 			{ mData: 'group_name' },
 			{ mData: 'type'},
@@ -364,14 +365,14 @@ $(document).ready(function () {
 		],
 	});
 
-	
+
 	/*------ Get Group Name For App User Entry Start ------*/
 	app_user_group_load = function app_user_group_load(){
 		$.ajax({
 			url: url+"/app-user/load-app-user-groups",
 			dataType: 'json',
 			success: function(response) {
-			var data = response.data;	
+			var data = response.data;
 				if(!jQuery.isEmptyObject(data)){
 					var html = '<table class="table table-bordered"><thead><tr class="headings"><th class="column-title text-center" class="col-md-8 col-sm-8 col-xs-8" >User Groups</th><th class="col-md-2 col-sm-2 col-xs-12"> <input  type="checkbox" id="check-all" class="tableflat">Select All</th></tr></thead>';
 						html += '<tr><td colspan="2">';
@@ -379,20 +380,20 @@ $(document).ready(function () {
 							html += '<div class="col-md-3" style="margin-top:5px;"><input  type="checkbox" name="group[]"  class="tableflat check_permission"  value="'+data["id"]+'"/> '+data["group_name"]+'</div>';
 						});
 						html += '</td></tr>';
-					html +='</table>';	
+					html +='</table>';
 				}
 				$('#select_app_user_group').html(html);
 				$('#app_user_form').iCheck({
 						checkboxClass: 'icheckbox_flat-green',
 						radioClass: 'iradio_flat-green'
-				});									
-				
+				});
+
 				$('#app_user_form input#check-all').on('ifChecked', function () {
-					
+
 					$("#app_user_form .tableflat").iCheck('check');
 				});
 				$('#app_user_form input#check-all').on('ifUnchecked', function () {
-					
+
 					$("#app_user_form .tableflat").iCheck('uncheck');
 				});
 			}
@@ -400,18 +401,17 @@ $(document).ready(function () {
 	}
 	app_user_group_load();
 	/*------ Get Group Name For App User Entry End ------*/
-	
 
 
 
 
 
 
-	
-	
+
+
+
 });
 
 
-  
 
-	 
+

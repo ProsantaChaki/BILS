@@ -11,6 +11,7 @@ use App\MessageMaster;
 use App\MessageCategory;
 use App\Notification;
 use DB;
+use mysql_xdevapi\Session;
 
 
 class FrontEndController extends Controller
@@ -20,6 +21,8 @@ class FrontEndController extends Controller
     {
         $this->page_title = $request->route()->getName();
         $this->page_desc = isset($description['desc']) ? $description['desc'] : $this->page_title;
+        $this->language =  \Session::get('locale');
+
     }
 
     public function authLogout($email) {
@@ -151,6 +154,8 @@ class FrontEndController extends Controller
     }
 
     public  function messageListNotification(){
+        $category = $this->language==='en'? 'mc.category_name as category_name': 'mc.category_name_bn as category_name';
+
         $individualMessage = DB::table('message_masters as mm')
             ->leftJoin('message_categories as mc', 'mm.message_category', '=', 'mc.id')
             ->leftJoin('app_user_group_members as apgm', 'mm.group_id','=','apgm.group_id')
@@ -166,7 +171,7 @@ class FrontEndController extends Controller
                     });
             })
             ->whereNotNull('admin_message')
-            ->select('mm.id as id', 'mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', 'mc.category_name as category_name')
+            ->select('mm.id as id', 'mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category)
             ->groupBy('mm.id')
             ->orderBy('mm.is_seen', 'asc')
             ->offset(1)
@@ -189,6 +194,11 @@ class FrontEndController extends Controller
     }
 
     public function newNotification(){
+	    //return Session::get('locale');
+        $category = $this->language==='en'? 'mc.category_name as category_name': 'mc.category_name_bn as category_name';
+        $group = $this->language==='en'? 'ug.group_name as group_name': 'ug.group_name_bn as group_name';
+
+
         $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
 		$Notifications = DB::table('notifications as n')
             /*->where('n.status',0)*/
@@ -216,7 +226,7 @@ class FrontEndController extends Controller
                     });
             })
             ->whereNotNull('admin_message')
-            ->select('mm.id as id', 'ug.group_name','mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', 'mc.category_name as category_name')
+            ->select('mm.id as id', $group,'mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category)
             ->groupBy('mm.id')
             ->orderBy('mm.is_seen', 'asc')
             ->offset(1)
@@ -362,8 +372,12 @@ class FrontEndController extends Controller
         $start = ($page_no*$limit)-$limit;
         $end   = $limit;
 
+        $category = $this->language==='en'? 'mc.category_name as category_name': 'mc.category_name_bn as category_name';
 
-    //return $start;
+        //$group = $this->language==='en'? 'group_name as group_name': 'group_name_bn as group_name';
+
+
+        //return $start;
 
 /*echo DB::table('message_masters as mm')
                 ->leftJoin('app_users as apu', 'mm.app_user_id', '=', 'apu.id')
@@ -422,7 +436,7 @@ class FrontEndController extends Controller
                 ->select('mm.id as id', 'mm.reply_to as replay_to_id', 'reply.admin_message AS reply_message', 'reply.app_user_message AS reply_app_message', 'mm.app_user_id as app_user_id', 'apu.user_profile_image','u.user_profile_image AS admin_image', 'mm.app_user_message as app_user_message', 'mm.admin_id as admin_id','u.name AS admin_name', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'),
                     DB::raw('group_concat( ma.app_user_attachment,"*",ma.attachment_type) AS app_user_attachment') ,
                     DB::raw('group_concat( ma.admin_atachment,"*",ma.attachment_type) AS admin_atachment') ,
-                    'mm.is_attachment as is_attachment', 'ma.attachment_type as attachment_type', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', 'mc.category_name as category_name','mm.group_id')
+                    'mm.is_attachment as is_attachment', 'ma.attachment_type as attachment_type', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category,'mm.group_id')
                 ->groupBy('mm.id')
                 ->orderBy('mm.message_date_time', 'desc')
                 ->offset($start)
@@ -454,7 +468,7 @@ class FrontEndController extends Controller
                 ->select('mm.id as id', 'mm.reply_to as replay_to_id', 'reply.admin_message AS reply_message', 'reply.app_user_message AS reply_app_message', 'mm.app_user_id as app_user_id', 'apu.user_profile_image','u.user_profile_image AS admin_image', 'mm.app_user_message as app_user_message', 'mm.admin_id as admin_id','u.name AS admin_name', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'),
                     DB::raw('group_concat( ma.app_user_attachment,"*",ma.attachment_type) AS app_user_attachment') ,
                     DB::raw('group_concat( ma.admin_atachment,"*",ma.attachment_type) AS admin_atachment') ,
-                    'mm.is_attachment as is_attachment', 'ma.attachment_type as attachment_type', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', 'mc.category_name as category_name')
+                    'mm.is_attachment as is_attachment', 'ma.attachment_type as attachment_type', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category)
                 ->groupBy('mm.id')
                 ->orderBy('mm.message_date_time', 'desc')
                 ->get();
@@ -506,12 +520,15 @@ class FrontEndController extends Controller
     }
 
     public function getMessageCategory(){
-        $data = MessageCategory::select('id', 'category_name')->get();
+	    $category = $this->language==='en'? 'category_name as category_name': 'category_name_bn as category_name';
+        $data = MessageCategory::select('id', $category)->get();
         return json_encode($data);
     }
 
     public function getMessageGroup(){
-        $data = UserGroup::where('type',2)->select('id', 'group_name')->get();
+        $group = $this->language==='en'? 'group_name as group_name': 'group_name_bn as group_name';
+
+        $data = UserGroup::where('type',2)->select('id', $group)->get();
         return json_encode($data);
     }
 
@@ -625,7 +642,24 @@ class FrontEndController extends Controller
         }
     }
 
-	public function noticeList(){
+    public function badgeCount(){
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+
+        $count = DB::table('notifications as n')
+            ->leftJoin('menus as m', 'm.id', '=','n.module_id')
+            ->select('n.module_id',
+                DB::raw('COUNT(n.id) as number'))
+            ->where('n.to_id','=',$user_info['id'])
+            ->where('n.status','=',0)
+            ->groupBy('n.module_id')
+            ->orderBy('n.module_id')
+            ->get();
+        return json_encode($count);
+    }
+
+
+    public function noticeList(){
         $data['page_title'] = $this->page_title;
 		$data['module_name']= "Notice";
 
@@ -668,21 +702,6 @@ class FrontEndController extends Controller
         return view('frontend.survey', $data);
     }
 
-    public function badgeCount(){
-        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
-
-
-        $count = DB::table('notifications as n')
-            ->leftJoin('menus as m', 'm.id', '=','n.module_id')
-            ->select('n.module_id',
-                DB::raw('COUNT(n.id) as number'))
-            ->where('n.to_id','=',$user_info['id'])
-            ->where('n.status','=',0)
-            ->groupBy('n.module_id')
-            ->orderBy('n.module_id')
-            ->get();
-        return json_encode($count);
-    }
 
 
 

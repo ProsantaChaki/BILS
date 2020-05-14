@@ -1,7 +1,7 @@
 // All the user related js functions will be here
-$(document).ready(function () {	
-	
-	
+$(document).ready(function () {
+
+
 	// for get site url
 	var url = $('.site_url').val();
 	//function for data table
@@ -11,7 +11,7 @@ $(document).ready(function () {
 		"serverSide": false,
 		"ajax": url+"/admin/ajax/admin-list",
 		"aoColumns": [
-			{ mData: 'user_profile_image', className: "text-center"}, 
+			{ mData: 'user_profile_image', className: "text-center"},
 			{ mData: 'id'},
 			{ mData: 'name' },
 			{ mData: 'email'},
@@ -25,44 +25,44 @@ $(document).ready(function () {
 			return nRow;
 		},*/
 	});
-	
+
 
 	// icheck for the inputs
 	$('.form').iCheck({
 		checkboxClass: 'icheckbox_flat-green',
 		radioClass: 'iradio_flat-green'
-	});	
-	
+	});
+
 	$('.flat_radio').iCheck({
 		//checkboxClass: 'icheckbox_flat-green'
 		radioClass: 'iradio_flat-green'
 	});
-		
-		
+
+
 	// Admin User Entry And Update
-	$('#save_admin_info').click(function(event){		
+	$('#save_admin_info').click(function(event){
 		event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		
-		
+
+
 		var formData = new FormData($('#admin_user_form')[0]);
 		formData.append("q","insert_or_update");
 		if($.trim($('#emp_name').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert Name","#emp_name");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert Name","#emp_name");
 		}
 		else if($.trim($('#nid_no').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert NID no","#nid_no");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert NID no","#nid_no");
 		}
 		else if($.trim($('#contact_no').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert contact no","#contact_no");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert contact no","#contact_no");
 		}
 		else if($.trim($('#email').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Select Email","#email");			
-		}	
+			success_or_error_msg('#form_submit_error','danger',"Select Email","#email");
+		}
 		else{
 			$.ajax({
 				url: url+"/admin/admin-user-entry",
@@ -73,9 +73,9 @@ $(document).ready(function () {
 				contentType:false,processData:false,
 				success: function(data){
 					var response = JSON.parse(data);
-				
+
 					if(response['result'] == '0'){
-						var errors	= response['errors'];					
+						var errors	= response['errors'];
 						resultHtml = '<ul>';
 							$.each(errors,function (k,v) {
 							resultHtml += '<li>'+ v + '</li>';
@@ -85,7 +85,7 @@ $(document).ready(function () {
 						//load_data("");
 						// clear_form();
 					}
-					else{				
+					else{
 						success_or_error_msg('#master_message_div',"success","Save Successfully");
 						$("#admin_user_list_button").trigger('click');
 						admin_datatable.ajax.reload();
@@ -97,16 +97,16 @@ $(document).ready(function () {
 						$("#id").val('');
 					}
 					$(window).scrollTop();
-				 }	
+				 }
 			});
-		}	
+		}
 	})
-	
+
 	//Clear form
 	$("#clear_button").on('click',function(){
 		$('.summernote').summernote('code',"");
 		clear_form();
-	});	
+	});
 
 	$("#cancle_admin_update").click(function(){
 		$('.summernote').summernote('code',"");
@@ -120,9 +120,9 @@ $(document).ready(function () {
 		$("#id").val('');
 	});
 
-	
-		
-		
+
+
+
 	//Admin User Edit
 	admin_user_edit = function admin_user_edit(id){
 		var edit_id = id;
@@ -165,20 +165,20 @@ $(document).ready(function () {
 						}
 					});
 					html += '</td></tr>';
-				html +='</table>';	
+				html +='</table>';
 			}
 			$('#group_select').html(html);
 			$('#admin_user_form').iCheck({
 					checkboxClass: 'icheckbox_flat-green',
 					radioClass: 'iradio_flat-green'
-			});									
-			
+			});
+
 			$('#admin_user_form input#check-all').on('ifChecked', function () {
-				
+
 				$("#admin_user_form .tableflat").iCheck('check');
 			});
 			$('#admin_user_form input#check-all').on('ifUnchecked', function () {
-				
+
 				$("#admin_user_form .tableflat").iCheck('uncheck');
 			});
 
@@ -188,11 +188,11 @@ $(document).ready(function () {
 			}
 		});
 	}
-		
-		
+
+
 
 	//Admin User View
-	 admin_user_view = function admin_user_view(id){	
+	 admin_user_view = function admin_user_view(id){
 		var user_id = id;
 		$.ajax({
 			url: url+'/admin/admin-view/'+user_id,
@@ -208,10 +208,10 @@ $(document).ready(function () {
 				$("#nid_div").html(data['nid_no']);
 				$("#address_div").html(data['address']);
 
-				
+
 				$("#group_div").html('<span class="badge badge-warning">'+groups[0]["group_name"]+'</span>');
-				
-				
+
+
 				if (data['remarks']!=null && data['remarks']!="") {
 					$("#remarks_div").html('<h2>Profile Details</h2>');
 					$("#remarks_details").html(data['remarks']);
@@ -220,15 +220,15 @@ $(document).ready(function () {
 					$("#remarks_div").html('');
 					$("#remarks_details").html("");
 				}
-				
+
 				if (data["user_profile_image"]!=null && data["user_profile_image"]!="") {
 					$(".profile_image").html('<img src="'+profile_image_url+'/'+data["user_profile_image"]+'" alt="User Image" class="img img-responsive">');
 				}
 				else{
 					$(".profile_image").html('<img src="'+profile_image_url+'/no-user-image.png" alt="User Image" class="img img-responsive">');
 				}
-				
-				
+
+
 				if(data['status']==1){
 					$("#status_div").html('<span class="badge badge-success">Active</span>');
 				}
@@ -238,10 +238,10 @@ $(document).ready(function () {
 			}
 		});
 	}
-		
 
-			
-	//Delete Admin-user	
+
+
+	//Delete Admin-user
 	delete_admin_user = function delete_admin_user(id){
 		var delete_id = id;
 		swal({
@@ -263,7 +263,7 @@ $(document).ready(function () {
 						admin_datatable.ajax.reload();
 					}
 				});
-			} 
+			}
 			else {
 				swal("Your Data is safe..!", {
 				icon: "warning",
@@ -274,20 +274,20 @@ $(document).ready(function () {
 
 
 	//Admin User & App User Group (Entry And update)
-	$('#save_group').click(function(event){		
+	$('#save_group').click(function(event){
 		event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		
+
 		var formData = new FormData($('#save_group_form')[0]);
 		if($.trim($('#group_name').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Insert Group Name","#group_name");			
+			success_or_error_msg('#form_submit_error','danger',"Please Insert Group Name","#group_name");
 		}
 		else if($.trim($('#type').val()) == ""){
-			success_or_error_msg('#form_submit_error','danger',"Please Select Type","#type");			
+			success_or_error_msg('#form_submit_error','danger',"Please Select Type","#type");
 		}
 		else{
 			$.ajax({
@@ -299,9 +299,9 @@ $(document).ready(function () {
 				contentType:false,processData:false,
 				success: function(data){
 					var response = JSON.parse(data);
-				
+
 					if(response['result'] == '0'){
-						var errors	= response['errors'];					
+						var errors	= response['errors'];
 						resultHtml = '<ul>';
 						$.each(errors,function (k,v) {
 							resultHtml += '<li>'+ v + '</li>';
@@ -311,7 +311,7 @@ $(document).ready(function () {
 						//load_data("");
 						clear_form();
 					}
-					else{				
+					else{
 						success_or_error_msg('#master_message_div',"success","Save Successfully");
 						clear_form();
 						admin_group.ajax.reload();
@@ -321,9 +321,9 @@ $(document).ready(function () {
 
 					}
 					$(window).scrollTop();
-				 }	
+				 }
 			});
-		}	
+		}
 	})
 
 
@@ -333,7 +333,7 @@ $(document).ready(function () {
 		"processing": true,
 		"serverSide": false,
 		"ajax": url+"/admin/admin-group-list",
-		"aoColumns": [ 
+		"aoColumns": [
 			{ mData: 'id'},
 			{ mData: 'group_name' },
 			{ mData: 'type'},
@@ -355,7 +355,8 @@ $(document).ready(function () {
 				$("#cancle_admin_user_group_button").removeClass('hidden');
 				$("#edit_id").val(data['id']);
 				$("#group_name").val(data['group_name']);
-				// $("#type").val(data['type']).change();
+                $("#group_name_bn").val(data['group_name_bn']);
+                // $("#type").val(data['type']).change();
 				if(data['status']=='1'){
 					$("#is_active").iCheck('check');
 				}
@@ -367,14 +368,14 @@ $(document).ready(function () {
 		});
 	}
 
-	//cancle (Admin & App user) group update 
+	//cancle (Admin & App user) group update
 	cancle_admin_user_group_update = function cancle_admin_user_group_update(){
 		$("#cancle_admin_user_group_button").click(function(){
 			clear_form();
 			$("#cancle_admin_user_group_button").addClass('hidden');
 			$(".save").html('Save');
 			$("#edit_id").val('');
-			
+
 		});
 	}
 
@@ -382,7 +383,7 @@ $(document).ready(function () {
 
 
 
-	//Delete Admin-user	
+	//Delete Admin-user
 	admin_group_delete = function admin_group_delete(id){
 		var delete_id = id;
 		swal({
@@ -404,7 +405,7 @@ $(document).ready(function () {
 						admin_group.ajax.reload();
 					}
 				});
-			} 
+			}
 			else {
 				swal("Your Data is safe..!", {
 				icon: "warning",
@@ -414,16 +415,16 @@ $(document).ready(function () {
 	}
 
 
-	
+
 
 /*------------------------Load User Groups--------------------------*/
-		
+
 	$.ajax({
 		url: url+"/admin/load-user-groups",
 		dataType: 'json',
 		success: function(response) {
-		var data = response.data;	
-			
+		var data = response.data;
+
 			if(!jQuery.isEmptyObject(data)){
 				var html = '<table class="table table-bordered"><thead><tr class="headings"><th class="column-title text-center" class="col-md-8 col-sm-8 col-xs-8" >Admin User Groups</th><th class="col-md-2 col-sm-2 col-xs-12"> <input type="checkbox" id="check-all" class="tableflat">Select All</th></tr></thead>';
 					html += '<tr><td colspan="2">';
@@ -431,20 +432,20 @@ $(document).ready(function () {
 						html += '<div class="col-md-3" style="margin-top:5px;"><input type="checkbox" name="group[]"  class="tableflat check_permission"  value="'+data["id"]+'"/> '+data["group_name"]+'</div>';
 					});
 					html += '</td></tr>';
-				html +='</table>';	
+				html +='</table>';
 			}
 			$('#group_select').html(html);
 			$('#admin_user_form').iCheck({
 					checkboxClass: 'icheckbox_flat-green',
 					radioClass: 'iradio_flat-green'
-			});									
-			
+			});
+
 			$('#admin_user_form input#check-all').on('ifChecked', function () {
-				
+
 				$("#admin_user_form .tableflat").iCheck('check');
 			});
 			$('#admin_user_form input#check-all').on('ifUnchecked', function () {
-				
+
 				$("#admin_user_form .tableflat").iCheck('uncheck');
 			});
 		}
@@ -459,7 +460,7 @@ $(document).ready(function () {
 		permission_panale_hide();
 	});
 	/*------------------------Permission Panel Hide End--------------------------*/
-	
+
 
 	/*------------------------Permission Panel Open Start--------------------------*/
 	group_permission = function group_permission(id){
@@ -467,10 +468,10 @@ $(document).ready(function () {
 		$("#permission_tab").trigger('click');
 		$("#group_id").val(id);
 		load_actions_for_group_permission(id);
-		
+
 	}
 	/*------------------------Permission Panel Open End--------------------------*/
-	
+
 
 	/*------------------------Load Permission Actions--------------------------*/
 	load_actions_for_group_permission = function load_actions_for_group_permission(id){
@@ -479,9 +480,9 @@ $(document).ready(function () {
 		url: url+"/admin/load-actions-for-group-permission/"+group_id_for_selected_action,
 		dataType: 'json',
 		success: function(response) {
-		var data = response.data;	
-			
-			
+		var data = response.data;
+
+
 			if(!jQuery.isEmptyObject(data)){
 				var html = '<table class="table table-bordered"><thead><tr class="headings"><th class="column-title text-center" class="col-md-8 col-sm-8 col-xs-8" >User Groups</th><th class="col-md-2 col-sm-2 col-xs-12"><input type="checkbox" id="check-all" class="tableflat">Select All</th></tr></thead>';
 					html += '<tr><td colspan="2">';
@@ -495,22 +496,22 @@ $(document).ready(function () {
 						}
 					});
 				html += '</td></tr>';
-				html +='</table>';	
+				html +='</table>';
 			}
-			
+
 
 			$('#action_select').html(html);
 			$('#action_select_form').iCheck({
 					checkboxClass: 'icheckbox_flat-green',
 					radioClass: 'iradio_flat-green'
-			});									
-			
+			});
+
 			$('#action_select_form input#check-all').on('ifChecked', function () {
-				
+
 				$("#action_select_form .tableflat").iCheck('check');
 			});
 			$('#action_select_form input#check-all').on('ifUnchecked', function () {
-				
+
 				$("#action_select_form .tableflat").iCheck('uncheck');
 			});
 		}
@@ -520,14 +521,14 @@ $(document).ready(function () {
 
 
 	/*------------------------Entry And Update Permission Actions Start--------------------------*/
-	$('#save_permission').click(function(event){		
+	$('#save_permission').click(function(event){
 		event.preventDefault();
 		$.ajaxSetup({
 			headers:{
 				'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 			}
 		});
-		var formData = new FormData($('#action_select_form')[0]);	
+		var formData = new FormData($('#action_select_form')[0]);
 		$.ajax({
 			url: url+"/admin/permission-action-entry-update",
 			type:'POST',
@@ -538,9 +539,9 @@ $(document).ready(function () {
 			processData:false,
 			success: function(data){
 				var response = JSON.parse(data);
-			
+
 				if(response['result'] == '0'){
-					var errors	= response['errors'];					
+					var errors	= response['errors'];
 					resultHtml = '<ul>';
 						$.each(errors,function (k,v) {
 						resultHtml += '<li>'+ v + '</li>';
@@ -549,7 +550,7 @@ $(document).ready(function () {
 					success_or_error_msg('#master_message_div',"danger",resultHtml);
 					clear_form();
 				}
-				else{				
+				else{
 					success_or_error_msg('#master_message_div',"success","Save Successfully");
 					//$("#admin_user_list_button").trigger('click');
 					//admin_group.ajax.reload();
@@ -558,7 +559,7 @@ $(document).ready(function () {
 					$("#user_group_management_tab").trigger('click');
 				}
 				$(window).scrollTop();
-			 }	
+			 }
 		});
 	});
 	/*----------------------Entry And Update Permission Actions Start------------------------*/
@@ -570,10 +571,10 @@ $(document).ready(function () {
 
 
 
-	
-	
+
+
 });
 
 
-  
+
 
