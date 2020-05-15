@@ -83,6 +83,9 @@ Route::group(['middleware'=>'appUser'], function() {
     Route::get('app/load-publications/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@publications'));
     Route::get('app/load-publications-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@publicationsDtails'));
 
+    Route::get('app/load-course/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courses'));
+    Route::get('app/load-course-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courseDtails'));
+
 
 
     Route::get('app/notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeList'));

@@ -307,7 +307,66 @@ class FrontEndController extends Controller
         return json_encode($notice);
     }
 
+    public function courses( $page, $txt){
+
+        $page_no 				= $page;
+        $limit 					= 5;
+        $start = ($page_no*$limit)-$limit;
+        $end   = $limit;
+        //return 1;
+        $date = date('Y-m-d');
+        //return $date;
+        //return $txt;
+
+        if($txt!='' && $txt!= null && $txt!='a'){
+            $course = DB::table('course_masters as p')
+                ->where("p.course_title","like","%".$txt."%")
+                ->orWhere("p.details","like","%".$txt."%")
+                ->select('p.id','p.course_title as title', 'p.details',DB::Raw('from_unixtime(UNIX_TIMESTAMP(created_at)) as created_at'), 'p.course_type as type')
+                ->groupBy('p.id')
+                ->orderBy('p.created_at','desc')
+                ->offset($start)
+                ->limit($end)
+                ->get();
+        }
+        else{
+            $course = DB::table('course_masters as p')
+                ->select('p.id','p.course_title as title', 'p.details',DB::Raw('from_unixtime(UNIX_TIMESTAMP(created_at)) as created_at'), 'p.course_type as type')
+                ->groupBy('p.id')
+                ->orderBy('p.created_at','desc')
+                ->offset($start)
+                ->limit($end)
+                ->get();
+        }
+
+        return json_encode($course);
+    }
+
+    public function courseDtails($id){
+        $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
+
+        $publication = DB::table('course_masters as p')
+            ->leftJoin('teachers as t','p.course_teacher','=','t.id')
+            ->leftJoin('course_categories as cc','p.course_type','=','cc.id')
+            ->where('p.id','=',$id)
+            ->select('p.id','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category,
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_start_time)) as appx_start_time'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_end_time)) as appx_end_time'),
+                DB::raw('(CASE WHEN p.course_status = 1 THEN "Initiate" WHEN p.course_status = 2 THEN "Approved" WHEN p.course_status = 3 THEN "Rejected"  ELSE "Started" END) AS status'))
+            ->get();
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        Notification::where([['to_id',$user_info['id']],['module_id',37],['module_reference_id',$id]])->update(['status'=>1]);
+
+
+        return json_encode($publication);
+    }
+
+
     public function publications( $page, $txt){
+
         $page_no 				= $page;
         $limit 					= 5;
         $start = ($page_no*$limit)-$limit;
