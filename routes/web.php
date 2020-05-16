@@ -86,7 +86,14 @@ Route::group(['middleware'=>'appUser'], function() {
     Route::get('app/load-course/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courses'));
     Route::get('app/load-course-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courseDtails'));
 
+    Route::get('app/load-survey/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@allSurvey'));
+    Route::get('app/load-survey-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@surveyDtails'));
 
+    Route::get('app/user_course',array('as'=>'Notice' , 'uses' =>'FrontEndController@userCourse'));
+    Route::get('app/user_course_description/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@userCourseDescription'));
+
+    Route::get('app/user_survey',array('as'=>'Notice' , 'uses' =>'FrontEndController@userSurvey'));
+    Route::get('app/user_survey_description/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@userSurveyDescription'));
 
     Route::get('app/notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeList'));
 	Route::get('app/detail-notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeDetail'));

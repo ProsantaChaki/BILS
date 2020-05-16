@@ -364,6 +364,161 @@ class FrontEndController extends Controller
         return json_encode($publication);
     }
 
+    public function userCourse(){
+
+        $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $course = DB::table('course_masters as p')
+            ->leftJoin('teachers as t','p.course_teacher','=','t.id')
+            ->leftJoin('course_categories as cc','p.course_type','=','cc.id')
+            ->leftJoin('course_perticipants as cp','p.id','=','cp.course_id')
+            ->where('cp.perticipant_id','=',$user_info['id'])
+            ->select('p.id','cp.id as cp_id','cp.perticipant_id','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category, 'cp.is_interested',
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_start_time)) as appx_start_time'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_end_time)) as appx_end_time'),
+                DB::raw('(CASE WHEN p.course_status = 1 THEN "Initiate" WHEN p.course_status = 2 THEN "Approved" WHEN p.course_status = 3 THEN "Rejected"  ELSE "Started" END) AS status'),
+                DB::raw('(CASE WHEN cp.is_interested = 1 THEN "Interested" WHEN cp.is_interested = 2 THEN "Registered" WHEN cp.is_interested = 4 THEN "Completed"  ELSE "Not interested" END) AS course_interested')
+                )
+            ->orderBy('cp.is_interested')
+            ->get();
+
+        return json_encode($course);
+	}
+
+    public function userCourseDescription($id){
+        $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $course = DB::table('course_masters as p')
+            ->leftJoin('teachers as t','p.course_teacher','=','t.id')
+            ->leftJoin('course_categories as cc','p.course_type','=','cc.id')
+            ->leftJoin('course_perticipants as cp','p.id','=','cp.course_id')
+            ->where('p.id','=',$id)
+            ->select('p.id','cp.id as cp_id','cp.perticipant_id','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category, 'cp.is_interested',
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_start_time)) as appx_start_time'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_end_time)) as appx_end_time'),
+                DB::raw('(CASE WHEN p.course_status = 1 THEN "Initiate" WHEN p.course_status = 2 THEN "Approved" WHEN p.course_status = 3 THEN "Rejected"  ELSE "Started" END) AS status'),
+                DB::raw('(CASE WHEN cp.is_interested = 1 THEN "Interested" WHEN cp.is_interested = 2 THEN "Registered" WHEN cp.is_interested = 4 THEN "Completed"  ELSE "Not interested" END) AS course_interested')
+                )
+            ->orderBy('cp.is_interested')
+            ->get();
+
+        return json_encode($course);
+    }
+
+    public function userSurvey(){
+
+        $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $course = DB::table('survey_masters as p')
+            ->leftJoin('survey_categories as cc','p.survey_category','=','cc.id')
+            ->leftJoin('survey_participants as cp','p.id','=','cp.survey_id')
+            ->where('cp.app_user_id','=',$user_info['id'])
+            ->select('p.id','cp.id as cp_id','p.survey_name as title', 'p.details',$category, 'cp.survey_completed',
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.start_date)) as start_date'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.end_date)) as end_date'),
+                DB::raw('(CASE WHEN p.status = 1 THEN "Initiate" WHEN p.status = 2 THEN "Published" WHEN p.status = 3 THEN "Closed"  ELSE "In Active" END) AS status')
+                )
+            ->orderBy('cp.survey_completed')
+            ->get();
+
+        return json_encode($course);
+    }
+
+    public function userSurveyDescription($id){
+        $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $course = DB::table('survey_masters as p')
+            ->leftJoin('survey_categories as cc','p.survey_category','=','cc.id')
+            ->leftJoin('survey_participants as cp','p.id','=','cp.survey_id')
+            ->where('p.id','=',$id)
+            ->select('p.id','cp.id as cp_id','p.survey_name as title', 'p.details',$category, 'cp.survey_completed',
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.start_date)) as start_date'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.end_date)) as end_date'),
+                DB::raw('(CASE WHEN p.status = 1 THEN "Initiate" WHEN p.status = 2 THEN "Published" WHEN p.status = 3 THEN "Closed"  ELSE "In Active" END) AS status')
+                )
+            ->get();
+
+        return json_encode($course);
+
+        return json_encode($course);
+    }
+
+
+    public function allSurvey( $page, $txt){
+
+        $page_no 				= $page;
+        $limit 					= 5;
+        $start = ($page_no*$limit)-$limit;
+        $end   = $limit;
+        //return 1;
+        $date = date('Y-m-d');
+        //return $date;
+        //return $txt;
+        $category = $this->language==='en'? 'cs.category_name as category_name': 'cs.category_name_bn as category_name';
+
+
+        if($txt!='' && $txt!= null && $txt!='a'){
+            $survey = DB::table('survey_masters as p')
+                ->leftJoin('survey_categories as cs','','=','cs.id')
+                ->where('p.status','<','2')
+                ->where("p.survey_name","like","%".$txt."%")
+                ->orWhere("p.details","like","%".$txt."%")
+                ->select('p.id','p.survey_name as title', 'p.details',DB::Raw('from_unixtime(UNIX_TIMESTAMP(created_at)) as created_at'), $category)
+                ->groupBy('p.id')
+                ->orderBy('p.created_at','desc')
+                ->offset($start)
+                ->limit($end)
+                ->get();
+        }
+        else{
+            $survey = DB::table('survey_masters as p')
+                ->leftJoin('survey_categories as cs','p.survey_category','=','cs.id')
+                ->where('p.status','<','2')
+                ->select('p.id','p.survey_name as title', 'p.details',DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'), $category)
+                ->groupBy('p.id')
+                ->orderBy('p.created_at','desc')
+                ->offset($start)
+                ->limit($end)
+                ->get();
+        }
+
+        return json_encode($survey);
+    }
+
+    public function surveyDtails($id){
+        $category = $this->language==='en'? 'cs.category_name as category_name': 'cs.category_name_bn as category_name';
+
+        $survey = DB::table('survey_masters as p')
+            ->leftJoin('survey_categories as cs','p.survey_category','=','cs.id')
+            ->where('p.id','=',$id)
+            ->select('p.id','p.survey_name as title', 'p.details',$category,
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.start_date)) as start_date'),
+                DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.end_date)) as end_date'),
+                DB::raw('(CASE WHEN p.status = 0 THEN "Initiate" WHEN p.status = 1 THEN "Published" WHEN p.status = 2 THEN "Closed"  ELSE "In Active" END) AS status'))
+            ->get();
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        Notification::where([['to_id',$user_info['id']],['module_id',6],['module_reference_id',$id]])->update(['status'=>1]);
+
+
+        return json_encode($survey);
+    }
+
+
 
     public function publications( $page, $txt){
 

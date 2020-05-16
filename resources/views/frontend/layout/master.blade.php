@@ -142,7 +142,7 @@
 			<!-- end: PAGE -->
 		</div>
 		<!-- end: MAIN CONTAINER -->
-		<!-- start: FOOTER --> 
+		<!-- start: FOOTER -->
 		<div class="footer clearfix" id="footer">
 				<div class="chat-form" style="display: none; margin-bottom:0px">
 					<form id="sent_message_to_user" name="sent_message_to_user" enctype="multipart/form-data" class="form form-horizontal form-label-left">
@@ -153,7 +153,7 @@
 							<span class="input-group-btn dropup ">
 								<button type="button" class="btn btn-warning dropdown-toggle btn-custom-side-padding " data-toggle="dropdown" style="padding-top:7px; margin-top:-1px">
 									<span class="caret"></span>
-								</button> 
+								</button>
 								<div class="dropdown-menu dropdown-enduring dropdown-checkboxes">
 									<select name="message_category" id="message_category" style="min-width:150px; font-size:10px">
 										<option disabled="" selected="" value="">{{__('app.Category_Topic')}} </option>
@@ -173,7 +173,7 @@
 							<span class="input-group-btn">
 								<button class="btn btn-success submit" type="submit" id="message_sent_to_user">
 									<i class="fa fa-paper-plane"></i>
-								</button> 
+								</button>
 							</span>
 						</div>
 					</form>
@@ -287,8 +287,8 @@
 					</div>
 					<div class="tab-pane" id="favorites">
 						<div class="users-list">
-							<ul class="media-list">
-								<h5 class="media-heading padding-10">Interested Course</h5>
+							<ul class="media-list" id="user_course_list">
+								<!--<h5 class="media-heading padding-10">Interested Course</h5>
 								<li class="media">
 									<a class="activity" href="javascript:void(0)">
 										<span class="desc">You added a new event to the calendar.</span>
@@ -321,14 +321,14 @@
 									<a class="activity" href="javascript:void(0)">
 										<span class="desc">You added a new event to the calendar.</span>
 									</a>
-								</li>
+								</li>-->
 							</ul>
 						</div>
 						<div class="user-chat">
 							<div class="sidebar-content">
 								<a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
-								<div class="panel-body panel-scroll ps-container ps-active-y" style="height: 377px;">
-
+								<div class="panel-body panel-scroll ps-container ps-active-y" id="course_description_side" style="height: 377px;">
+                                    <!--
 									<h4> Vertical description </h4>
 									<dl>
 										<dt>
@@ -352,17 +352,17 @@
 										<dt>
 											Euismod
 										</dt>
-									</dl>
+									</dl>-->
 
 								</div>
 							</div>
 
 						</div>
 					</div>
-						<div class="tab-pane" id="settings">
+					<div class="tab-pane" id="settings">
 						<div class="users-list">
-							<ul class="media-list">
-								<h5 class="media-heading padding-10">Open Survey</h5>
+							<ul class="media-list" id="user_survey_list">
+								<!--<h5 class="media-heading padding-10">Open Survey</h5>
 								<li class="media">
 									<a class="activity" href="javascript:void(0)">
 										<span class="desc">You added a new event to the calendar.</span>
@@ -394,18 +394,14 @@
 									<a class="activity" href="javascript:void(0)">
 										<span class="desc">You added a new event to the calendar.</span>
 									</a>
-								</li>
+								</li>-->
 							</ul>
-							<div class="sidebar-content">
-								<button class="btn btn-success">
-									<i class="icon-settings"></i> Save Changes
-								</button>
-							</div>
 						</div>
-						<div class="user-chat">
-							<div class="sidebar-content">
-								<a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
-								<div class="panel-body panel-scroll ps-container ps-active-y" style="height: 377px;">
+                        <div class="user-chat">
+                            <div class="sidebar-content">
+                                <a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
+                                <div class="panel-body panel-scroll ps-container ps-active-y" id="survey_description_side" style="height: 377px;">
+                                    <!--
 									<h4> Vertical description </h4>
 									<dl>
 										<dt>
@@ -417,18 +413,6 @@
 										<dt>
 											Euismod
 										</dt>
-										<dd>
-											Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
-										</dd>
-										<dd>
-											Donec id elit non mi porta gravida at eget metus.
-										</dd>
-										<dt>
-											Malesuada porta
-										</dt>
-										<dd>
-											Etiam porta sem malesuada magna mollis euismod.
-										</dd>
 									</dl>
 									<h4> Horizontal description </h4>
 									<dl class="dl-horizontal">
@@ -441,29 +425,73 @@
 										<dt>
 											Euismod
 										</dt>
-										<dd>
-											Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
-										</dd>
-										<dd>
-											Donec id elit non mi porta gravida at eget metus.
-										</dd>
-										<dt>
-											Malesuada porta
-										</dt>
-										<dd>
-											Etiam porta sem malesuada magna mollis euismod.
-										</dd>
-										<dt>
-											Felis euismod semper eget lacinia
-										</dt>
-										<dd>
-											Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-										</dd>
-									</dl>
-								</div>
-							</div>
+									</dl>-->
+                                </div>
+                            </div>
+                        </div>
 
-						</div>
+                        <!--<div class="user-chat">
+                            <div class="sidebar-content">
+                                <a class="sidebar-back" href="#"><i class="fa fa-chevron-circle-left"></i> Back</a>
+                                <div class="panel-body panel-scroll ps-container ps-active-y" style="height: 377px;">
+                                    <h4> Vertical description </h4>
+                                    <dl>
+                                        <dt>
+                                            Description lists
+                                        </dt>
+                                        <dd>
+                                            A description list is perfect for defining terms.
+                                        </dd>
+                                        <dt>
+                                            Euismod
+                                        </dt>
+                                        <dd>
+                                            Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
+                                        </dd>
+                                        <dd>
+                                            Donec id elit non mi porta gravida at eget metus.
+                                        </dd>
+                                        <dt>
+                                            Malesuada porta
+                                        </dt>
+                                        <dd>
+                                            Etiam porta sem malesuada magna mollis euismod.
+                                        </dd>
+                                    </dl>
+                                    <h4> Horizontal description </h4>
+                                    <dl class="dl-horizontal">
+                                        <dt>
+                                            Description lists
+                                        </dt>
+                                        <dd>
+                                            A description list is perfect for defining terms.
+                                        </dd>
+                                        <dt>
+                                            Euismod
+                                        </dt>
+                                        <dd>
+                                            Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
+                                        </dd>
+                                        <dd>
+                                            Donec id elit non mi porta gravida at eget metus.
+                                        </dd>
+                                        <dt>
+                                            Malesuada porta
+                                        </dt>
+                                        <dd>
+                                            Etiam porta sem malesuada magna mollis euismod.
+                                        </dd>
+                                        <dt>
+                                            Felis euismod semper eget lacinia
+                                        </dt>
+                                        <dd>
+                                            Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                        </div>-->
 					</div>
 				</div>
 			</div>
@@ -565,6 +593,14 @@
 		//Main.init();
 		Animation.init();
 	});
+
+    $.ajaxSetup({
+        headers:{
+            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
 //alert("{{$token}}")
 /*
 var deviceIsAndroid = /(android)/i.test(navigator.userAgent);
@@ -586,11 +622,7 @@ $("input").bind("click", function () {
 
 */
 
-    $.ajaxSetup({
-        headers:{
-            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-        }
-    });
+
 
 
     ajaxPreLoad = () =>{
@@ -617,9 +649,204 @@ $("input").bind("click", function () {
 		})
 
 	}
+    seeCourseDetails = (id) =>{
+
+        //e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "{{ url('app/')}}/user_course_description/"+id,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                response = JSON.parse(data)
+
+                created = new Date(response[0]["created_at"]+ 'Z');
+                created = created.toDateString()
+                start = new Date(response[0]["appx_start_time"]+ 'Z');
+                start = start.toDateString()
+                end = new Date(response[0]["appx_end_time"]+ 'Z');
+                end = end.toDateString()
 
 
-// page name: message notice course survey publication notification
+                let category_name = (response[0]["category_name"])?"<button class='btn btn-disabled btn-info btn-xs'>"+response[0]["category_name"]+"</button>":"";
+
+                let  p = '<span><p style="text-align:left"> Teacher: '+response[0]['name']+'<b style="float:right">Duration: '+start+' to '+end+'</b> </p></span><br>'
+
+                let attachment = '';
+
+                if(response[0]['attachment']){
+                    //attachment = attachment_url+'/'+response[0]['attachment'];
+                    attachment = "<br>"+publication+ '<br><a class="btn btn-disabled btn-warning" href="'+attachment_url+'/'+response[0]["attachment"]+'" download><i class="clip-attachment"></i></a>'
+                }
+                html = '<div class="alert alert-block alert-info fade in"><h4>'+response[0]["title"]+'</h4>' + category_name + p +'<hr>'+response[0]['details']+'</div>'
+
+                $('#course_description_side').html(html)
+            }
+        })
+    }
+
+	loadCourseSideBar = () => {
+        $.ajax({
+            type: "GET",
+            url: "{{ url('app/')}}/user_course" ,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                respons = JSON.parse(data)
+                is_interested = 0
+                is_registered = 0
+                is_completed = 0
+                interested = '<h5 class="media-heading padding-10">Interested Course</h5>'
+                registered = '<h5 class="media-heading padding-10">Registered Course</h5>'
+                completed = '<h5 class="media-heading padding-10">Completed Course</h5>'
+
+
+                $.each(respons, function (key, course) {
+                    if(course.is_interested==1){
+                        is_interested = 1
+                        interested += '<li onclick="seeCourseDetails('+course.id+')" class="media">\n' +
+                            '              <a class="activity" href="javascript:void(0)">\n' +
+                            '                <span class="desc">'+course.title+'</span>\n' +
+                            '              </a>\n' +
+                            '           </li>'
+                    }
+                    if(course.is_interested==2){
+                        is_registered =1
+                        registered += '<li onclick="seeCourseDetails('+course.id+')" class="media">\n' +
+                            '              <a class="activity" href="javascript:void(0)">\n' +
+                            '                <span class="desc">'+course.title+'</span>\n' +
+                            '              </a>\n' +
+                            '           </li>'
+                    }
+                    if(course.is_interested==4){
+                        is_completed = 1
+                        completed += '<li onclick="seeCourseDetails('+course.id+')" class="media">\n' +
+                            '              <a class="activity" href="javascript:void(0)">\n' +
+                            '                <span class="desc">'+course.title+'</span>\n' +
+                            '              </a>\n' +
+                            '           </li>'
+                    }
+                })
+
+                html = ''
+                html += is_interested==1? interested: '';
+                html += is_registered==1? registered: '';
+                html += is_completed==1? completed: '';
+
+                $('#user_course_list').html(html)
+
+                $("#page-sidebar .media a").on("click", function(e) {
+                    $(this).closest(".tab-pane").css({
+                        right: $("#page-sidebar").outerWidth()
+                    });
+                    e.preventDefault();
+                });
+
+
+            }
+        })
+    }
+
+    loadCourseSideBar()
+
+    seeSurveyDetails = (id) =>{
+
+        //e.preventDefault();
+
+        $.ajax({
+            type: "GET",
+            url: "{{ url('app/')}}/user_survey_description/"+id,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                response = JSON.parse(data)
+                console.log(respons)
+
+                created = new Date(response[0]["created_at"]+ 'Z');
+                created = created.toDateString()
+                start = new Date(response[0]["start_date"]+ 'Z');
+                start = start.toDateString()
+                end = new Date(response[0]["end_date"]+ 'Z');
+                end = end.toDateString()
+
+
+                let category_name = (response[0]["category_name"])?"<button class='btn btn-disabled btn-info btn-xs'>"+response[0]["category_name"]+"</button>":"";
+
+                let  p = '<span><p style="text-align:left"><b style="float:right">Duration: '+start+' to '+end+'</b> </p></span><br>'
+
+
+                html = '<div class="alert alert-block alert-info fade in"><h4>'+response[0]["title"]+'</h4>' + category_name + p +response[0]['details']+'</div>'
+
+                console.log(html)
+                $('#course_description_side').html(html)
+            }
+        })
+
+
+    }
+
+    loadSurveySideBar = () => {
+        $.ajax({
+            type: "GET",
+            url: "{{ url('app/')}}/user_survey" ,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                respons = JSON.parse(data)
+                console.log(respons)
+                is_interested = 0
+                is_completed = 0
+                interested = '<h5 class="media-heading padding-10">Open Survey</h5>'
+                completed = '<h5 class="media-heading padding-10">Completed Survey</h5>'
+
+                alert('sfd')
+
+                $.each(respons, function (key, course) {
+                    if(course.survey_completed==0){
+                        is_interested = 1
+                        interested += '<li onclick="seeSurveyDetails('+course.id+')" class="media">\n' +
+                            '              <a class="activity" href="javascript:void(0)">\n' +
+                            '                <span class="desc">'+course.title+'</span>\n' +
+                            '              </a>\n' +
+                            '           </li>'
+                    }
+                    if(course.survey_completed==1){
+                        is_completed =1
+                        completed += '<li onclick="seeSurveyDetails('+course.id+')" class="media">\n' +
+                            '              <a class="activity" href="javascript:void(0)">\n' +
+                            '                <span class="desc">'+course.title+'</span>\n' +
+                            '              </a>\n' +
+                            '           </li>'
+                    }
+
+                })
+
+                html = ''
+                html += is_interested==1? interested: '';
+                html += is_completed==1? completed: '';
+
+
+                $('#user_survey_list').html(html)
+
+                $("#page-sidebar .media a").on("click", function(e) {
+                    $(this).closest(".tab-pane").css({
+                        right: $("#page-sidebar").outerWidth()
+                    });
+                    e.preventDefault();
+                });
+
+
+            }
+        })
+    }
+
+    loadSurveySideBar()
+
+    // page name: message notice course survey publication notification
     loadPage = function loadPage(pageName) {
 		$('.navbar-toggle').trigger('click');
 		// load a ajax loader
@@ -700,18 +927,21 @@ $("input").bind("click", function () {
 			e.preventDefault();
 		});
 		$("#page-sidebar .sidebar-back").on("click", function(e) {
-			$(this).closest(".tab-pane").css({
+
+            $(this).closest(".tab-pane").css({
 				right: 0
 			});
 			e.preventDefault();
 		});
 		$('#page-sidebar .sidebar-wrapper').perfectScrollbar({
+
 			wheelSpeed: 50,
 			minScrollbarLength: 20,
 			suppressScrollX: true
 		});
 		$('#sidebar-tab a').on('shown.bs.tab', function (e) {
-			$("#page-sidebar .sidebar-wrapper").perfectScrollbar('update');
+
+            $("#page-sidebar .sidebar-wrapper").perfectScrollbar('update');
 		});
 
 	</script>
