@@ -173,7 +173,7 @@ class FrontEndController extends Controller
             ->whereNotNull('admin_message')
             ->select('mm.id as id', 'mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category)
             ->groupBy('mm.id')
-            ->orderBy('mm.is_seen', 'asc')
+            ->orderBy('mm.created_at', 'asc')
             ->offset(1)
             ->limit(10)
             ->get();
@@ -205,7 +205,7 @@ class FrontEndController extends Controller
             ->where('n.to_id',$user_info['id'])
             ->select('n.id as id', 'n.notification_title as title', 'n.message as details','n.status', DB::Raw('from_unixtime(UNIX_TIMESTAMP(n.created_at)) as msg_date'),'n.module_id')
             ->groupBy('n.id')
-            ->orderBy('n.status', 'asc')
+            ->orderBy('n.id', 'desc')
             /*->offset(1)*/ // dont know why u used this chaki?
             ->limit(10)
             ->get();
@@ -228,7 +228,7 @@ class FrontEndController extends Controller
             ->whereNotNull('admin_message')
             ->select('mm.id as id', $group,'mm.app_user_id as app_user_id','mm.is_seen','mm.message_category as category_id', 'mm.group_id as group_id','mm.app_user_message as app_user_message', 'mm.admin_id as admin_id', 'mm.admin_message as admin_message',DB::Raw('from_unixtime(UNIX_TIMESTAMP(mm.created_at)) as msg_date'), 'mm.is_attachment as is_attachment', 'mm.admin_id as admin_id', 'mm.is_attachment_app_user as is_attachment_app_user', $category)
             ->groupBy('mm.id')
-            ->orderBy('mm.is_seen', 'asc')
+            ->orderBy('mm.id', 'desc')
             ->offset(1)
             ->limit(10)
             ->get();
@@ -240,7 +240,7 @@ class FrontEndController extends Controller
 
     public function allNotification($page){
         $page_no 				= $page;
-        $limit 					= 20;
+        $limit 					= 10;
         $start = ($page_no*$limit)-$limit;
         $end   = $limit;
 
@@ -264,7 +264,7 @@ class FrontEndController extends Controller
 
     public function userNotice( $page, $txt){
         $page_no 				= $page;
-        $limit 					= 2;
+        $limit 					= 5;
         $start = ($page_no*$limit)-$limit;
         $end   = $limit;
         $date = date('Y-m-d');
@@ -740,9 +740,17 @@ class FrontEndController extends Controller
     }
 
     public function getMessageGroup(){
-        $group = $this->language==='en'? 'group_name as group_name': 'group_name_bn as group_name';
+        $group = $this->language==='en'? 'ug.group_name as group_name': 'ug.group_name_bn as group_name';
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
 
-        $data = UserGroup::where('type',2)->select('id', $group)->get();
+        //$data = UserGroup::where('type',2)->select('id', $group)->get();
+        $data = DB::table('user_groups as ug')
+            ->leftJoin('app_user_group_members as augm','augm.group_id','=','ug.id')
+            ->where('ug.type','=','2')
+            ->where('augm.status','=',1)
+            ->where('augm.app_user_id','=',$user_info['id'])
+            ->select('ug.id',$group)
+            ->get();
         return json_encode($data);
     }
 

@@ -151,14 +151,28 @@
 						<input type="hidden" id="edit_msg_id" name="edit_msg_id">
 						<div class="input-group">
 							<span class="input-group-btn dropup ">
-								<button type="button" class="btn btn-warning dropdown-toggle btn-custom-side-padding " data-toggle="dropdown" style="padding-top:7px; margin-top:-1px">
+                                <button data-toggle="dropdown" class="btn btn-warning btn-sm dropdown-toggle">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" id="category_ul" style="font-size:12px;">
+                                    <li onclick="categorySelect(0,'None')" id="0">
+                                        <a href="#">
+                                            {{__('app.None')}}
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+
+                                </ul>
+                                <input type="hidden" name="message_category" id="message_category">
+
+                                    <!--<button type="button" class="btn btn-warning dropdown-toggle btn-custom-side-padding " data-toggle="dropdown" style="padding-top:7px; margin-top:-1px">
 									<span class="caret"></span>
 								</button>
 								<div class="dropdown-menu dropdown-enduring dropdown-checkboxes">
 									<select name="message_category" id="message_category" style="min-width:150px; font-size:10px">
 										<option disabled="" selected="" value="">{{__('app.Category_Topic')}} </option>
 									</select>
-								</div>
+								</div>-->
 							</span>
 							<input type="hidden" name="app_user_id" id="app_user_id">
 							<input type="hidden" name="group_id" id="group_id" value="0">
@@ -803,8 +817,6 @@ $("input").bind("click", function () {
                 interested = '<h5 class="media-heading padding-10">Open Survey</h5>'
                 completed = '<h5 class="media-heading padding-10">Completed Survey</h5>'
 
-                alert('sfd')
-
                 $.each(respons, function (key, course) {
                     if(course.survey_completed==0){
                         is_interested = 1
@@ -1147,6 +1159,8 @@ $("input").bind("click", function () {
         });
 
         //alert($('#message_badge').html())
+
+
 
     </script>
 

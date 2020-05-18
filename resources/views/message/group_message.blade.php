@@ -254,7 +254,7 @@
                     url: url+"/message/search-app-users-group",
                     type:'POST',
                     data:{group_name:group_name},
-                    async:false,
+                    async:true,
                     success: function(data){
                         var app_users = JSON.parse(data);
 
@@ -265,7 +265,7 @@
                                 html+='<div class="wrap">';
                                 //html+='<span class="contact-status busy"></span>';
                                 html+='<div class="meta">';
-                                html+='<p onclick="loadGroupMessage('+row["id"]+','+number_of_msg+')" class="name">'+row["group_name"]+'</p>';
+                                html+='<p onclick="loadGroupMessage(1,'+row["id"]+')" class="name">'+row["group_name"]+'</p>';
                                 //html+='<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>';
                                 html+='</div>';
                                 html+='</div>';
@@ -378,7 +378,7 @@
             $.ajax({
                 url: url + '/message/delete-message/'+id,
                 type: 'GET',
-                async: false,
+                async: true,
                 success: function (response) {
                     // need to check whether removed or now
                     if($('#sent_message_id_'+id).prev().hasClass('reply')){
@@ -413,7 +413,7 @@
                     url: url+"/message/admin-message-sent-to-group",
                     type:'POST',
                     data:formData,
-                    async:false,
+                    async:true,
                     cache:false,
                     contentType:false,
                     processData:false,
@@ -731,7 +731,7 @@
                     url: url+"/message/admin-message-sent-to-user",
                     type:'POST',
                     data:formData,
-                    async:false,
+                    async:true,
                     cache:false,
                     contentType:false,
                     processData:false,

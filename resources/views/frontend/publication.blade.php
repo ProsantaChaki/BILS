@@ -8,7 +8,7 @@
 	<div class="panel-heading">
 		<i class=" fa fa-file-text "></i>
 		{{__('app.Publication')}}
-		
+
 		<form class="sidebar-search">
 			<div class="form-group">
 				<input type="text" placeholder="Start Searching..." data-default="130" style="width: 130px;">
@@ -55,6 +55,12 @@
             url: "{{ url('app/')}}/load-publications-details/"+id,
             type: 'get',
             async: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function( xhr ) {
+                //ajaxPreLoad()
+                //$("#load-content").fadeOut('slow');
+            },
             success: function (response) {
                 //console.log(response)
 
@@ -92,9 +98,14 @@
         $.ajax({
             url: "{{ url('app/')}}/load-publications/"+page+'/'+text,
             type:'get',
-            async:false,
+            async:true,
+            beforeSend: function( xhr ) {
+                //ajaxPreLoad()
+                //$("#load-content").fadeOut('slow');
+            },
             success: function(response) {
                 var response = JSON.parse(response);
+                console.log(response)
                 if(!jQuery.isEmptyObject(response)){
                     html = "";
                     noticeMonth = -1
@@ -112,7 +123,7 @@
 
                         var details = publication["details"].replace(/<(?!br\s*\/?)[^>]+>/g, '');
                         var details = details.substring(0, 300)+'. . . . . . . .';
-						
+
                        // alert(publication['title'])
 
                         html+='<li> ' +
@@ -133,11 +144,12 @@
                     //console.log(html)
                     if(type==2){
                         $('#all_publications').append(html);
-						 page ++ ;
                     }
                     else{
                         $('#all_publications').html(html)
                     }
+                    page ++ ;
+
                     //$('#all_publications').html(html)
                 }
             }

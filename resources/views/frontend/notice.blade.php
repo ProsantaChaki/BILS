@@ -6,8 +6,8 @@
 <div class="panel panel-default border-none">
 	<div class="panel-heading">
 		<i class=" clip-notification-2 "></i>
-		{{__('app.Notice')}} 
-		<form class="sidebar-search">
+		{{__('app.Notice')}}
+        <form class="sidebar-search">
 			<div class="form-group">
 				<input type="text" id="search_field" placeholder="Start Searching..." data-default="130" style="width: 130px;">
 				<button class="submit">
@@ -41,11 +41,33 @@
         }
     });
 
+    ajaxPreLoad = () =>{
+        $('#load-content').block({
+            overlayCSS: {
+                backgroundColor: '#fff'
+            },
+            message: '<img src={{ asset('assets/images/loading.gif') }} /> Loading...',
+            css: {
+                border: 'none',
+                color: '#333',
+                background: 'none'
+            }
+        });
+    }
+
+
     noticeDetails = (id) =>{
         $.ajax({
             url: "{{ url('app/')}}/load-notice-details/"+id,
             type: 'get',
-            async: false,
+            async: true,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function( xhr ) {
+                  //ajaxPreLoad()
+                //$("#load-content").fadeOut('slow');
+            },
             success: function (response) {
                 //console.log(response)
 
@@ -70,6 +92,7 @@
 
 
     loadNotice = function loadNotice(type){
+        //alert(type)
         text = 'a'
         if($(search_input).val()!=null && $(search_input).val()!=''  ) {
             //alert(1)
@@ -77,9 +100,17 @@
         }        $.ajax({
             url: "{{ url('app/')}}/load-notice/"+page+'/'+text,
             type:'get',
-            async:false,
+            async:true,
+            cache: true,
+            contentType: false,
+            processData: false,
+            beforeSend: function( xhr ) {
+                ajaxPreLoad()
+                //$("#load-content").fadeOut('slow');
+            },
             success: function(response) {
                 var response = JSON.parse(response);
+                //console.log(response)
                 if(!jQuery.isEmptyObject(response)){
                     html = "";
                     noticeMonth = -1
@@ -136,12 +167,13 @@
 					if(html != ""){
 						if(type==2){
 							$('#all_notice').append(html)
-							page ++ ;
 						}
 						else{
 							$('#all_notice').html(html)
+
 						}
-						
+                        page ++ ;
+
 					}
                     //$('#all_notice').html(html)
                 }

@@ -234,7 +234,7 @@
 
         //08--Done
         loadMessages = function loadMessages(message_load_type){
-            $("#search_app_user").val("");
+            //$("#search_app_user").val("");
             // event.preventDefault();
             $.ajaxSetup({
                 headers:{
@@ -357,8 +357,8 @@
                                 html += '<span class="time_date_sent">'+mc+' '+msg_date+'<a href="javascript:void(0)" onclick="removeMessage('+message["id"]+','+tem_msg+')" class="margin-left-2 text-danger"><i class="clip-remove"></i></a><a href="javascript:void(0)" onclick="editMessage('+message["id"]+','+tem_msg+')" class="margin-left-2"><i class="fa fa-pencil"></i></a></span>';
                             }
                             else {
-                                if(message["replied"]){
-                                    html+='<li class="receive_msg reply" style="margin-bottom: -15px;padding-left: 30px;"><div class="replied_message_p p_div" ">'+message['reply_message']+'</div></li>  ';
+                                if(message["reply_message"]){
+                                    html+='<li class="sent_msg reply" style="margin-bottom: -15px;padding-right: 30px;"><div class="replied_message_p p_div" ">'+message['reply_message']+'</div></li>  ';
                                 }
                                 html += '<li class="receive_msg" id="receive_message_id_'+message['id']+'">';
                                 if($.trim(message['user_profile_image']) == "null" || $.trim(message['user_profile_image']) == ""  ) appuser_image = "no-user-image.png";
@@ -467,7 +467,8 @@
         }
 
         loadMessageUser = function loadMessageUser(app_user_id){
-            $("#search_app_user").val("");
+            event.preventDefault()
+            //$("#search_app_user").val("");
             // change the last app users message
             last_appuser_message_id = 0;
             //event.preventDefault();
@@ -536,7 +537,7 @@
             $.ajax({
                 url: url + '/message/delete-message/'+id,
                 type: 'GET',
-                async: false,
+                async: true,
                 success: function (response) {
 					// need to check whether removed or now
 					if($('#sent_message_id_'+id).prev().hasClass('reply')){
@@ -559,7 +560,7 @@
 
 
         searchAppUsers = function searchAppUsers(){
-            //event.preventDefault();
+            event.preventDefault();
             $.ajaxSetup({
                 headers:{
                     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
@@ -600,9 +601,7 @@
             }
         }
 
-        $("#search_app_user").keyup(function(){
-            searchAppUsers();
-        });
+
 
 
         loadAppUser = function loadAppUser(){
@@ -650,6 +649,14 @@
 
  	    loadAppUser();
 
+        $("#search_app_user").keyup(function(){
+            //alert('sdf')
+            searchAppUsers();
+            if($("#search_app_user").val()==''){
+                loadAppUser()
+            }
+        });
+
 
         //08---done
         $("#message_sent_to_user").click(function(){
@@ -670,8 +677,8 @@
                     url: url+"/message/admin-message-sent-to-user",
                     type:'POST',
                     data:formData,
-                    async:false,
-                    cache:false,
+                    async:true,
+                    cache:true,
                     contentType:false,
                     processData:false,
                     success: function(data){

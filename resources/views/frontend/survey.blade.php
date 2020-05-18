@@ -74,18 +74,16 @@
         loadsurvey = function loadsurvey(type){
             text = 'a'
             if($(search_input).val()!=null && $(search_input).val()!=''  ) {
-                //alert(1)
                 text = $(search_input).val()
             }
 
-            alert('survey')
             $.ajax({
                 url: "{{ url('app/')}}/load-survey/"+page+'/'+text,
                 type:'get',
-                async:false,
+                async:true,
                 success: function(response) {
                     var response = JSON.parse(response);
-                    console.log(response)
+                    //console.log(response)
                     if(!jQuery.isEmptyObject(response)){
                         html = "";
                         noticeMonth = -1
@@ -124,11 +122,12 @@
                         //console.log(html)
                         if(type==2){
                             $('#all_surveys').append(html);
-                            page ++ ;
                         }
                         else{
                             $('#all_surveys').html(html)
                         }
+                        page ++ ;
+
                         //$('#all_publications').html(html)
                     }
                 }
@@ -142,7 +141,7 @@
             $.ajax({
                 url: "{{ url('app/')}}/load-survey-details/"+id,
                 type: 'get',
-                async: false,
+                async: true,
                 success: function (response) {
 
                     response = JSON.parse(response)

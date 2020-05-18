@@ -47,17 +47,32 @@
                     </span>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-success pull-right btn-squared">
+                    <button type="submit" onclick="ajaxPreLoad()" class="btn btn-success pull-right btn-squared">
                         {{__('auth.Login')}}  <i class="fa fa-arrow-circle-right"></i>
                     </button>
                 </div>
 				<div class="new-account">
 				{{__('auth.dont_have_accout')}}
 					<a href="{{url('app/register')}}" class="register">
-						{{__('auth.create_an_account')}} 
+						{{__('auth.create_an_account')}}
 					</a>
 				</div>
             </fieldset>
         </form>
 
 @endsection
+<script>
+    ajaxPreLoad = () =>{
+        $('#load-content').block({
+            overlayCSS: {
+                backgroundColor: '#fff'
+            },
+            message: '<img src={{ asset('assets/images/loading.gif') }} /> Loading...',
+            css: {
+                border: 'none',
+                color: '#333',
+                background: 'none'
+            }
+        });
+    }
+</script>

@@ -74,15 +74,19 @@
 loadCourse = function loadCourse(type){
     text = 'a'
     if($(search_input).val()!=null && $(search_input).val()!=''  ) {
-        //alert(1)
         text = $(search_input).val()
     }
-
 
     $.ajax({
         url: "{{ url('app/')}}/load-course/"+page+'/'+text,
         type:'get',
-        async:false,
+        async:true,
+        contentType: false,
+        processData: false,
+        beforeSend: function( xhr ) {
+            ajaxPreLoad()
+            //$("#load-content").fadeOut('slow');
+        },
         success: function(response) {
             var response = JSON.parse(response);
             if(!jQuery.isEmptyObject(response)){
@@ -141,7 +145,13 @@ courseDetails  = (id) =>{
         $.ajax({
             url: "{{ url('app/')}}/load-course-details/"+id,
             type: 'get',
-            async: false,
+            async: true,
+            contentType: false,
+            processData: false,
+            beforeSend: function( xhr ) {
+                //ajaxPreLoad()
+                //$("#load-content").fadeOut('slow');
+            },
             success: function (response) {
 
                 response = JSON.parse(response)
