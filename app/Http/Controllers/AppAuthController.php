@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AppUserGroupMember;
+use App\Notification;
 use App\UserGroup;
 use App\UserGroupMember;
 use Illuminate\Http\Request;
@@ -208,6 +209,15 @@ class AppAuthController extends Controller
                     //echo 2;
 
                 }
+                $notification = new Notification();
+                $notification->from_id = $registration['id'];
+                $notification->to_user_type = 'Admin';
+                $notification->from_user_type = 'App User';
+                $notification->notification_title = 'New User Registration';
+                $notification->message = 'New User Registration';
+                $notification->notification_title = $registration['name'].'Register to BILS';
+                $notification->save();
+
                 DB::commit();
                 return redirect('app/auth/login')->with('message',__('auth.successfully_registered'));
             }

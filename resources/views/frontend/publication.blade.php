@@ -58,11 +58,12 @@
             contentType: false,
             processData: false,
             beforeSend: function( xhr ) {
-                //ajaxPreLoad()
+                ajaxPreLoad()
                 //$("#load-content").fadeOut('slow');
             },
             success: function (response) {
                 //console.log(response)
+                $('#load-content').unblock();
 
                 response = JSON.parse(response)
                 date = new Date(response[0]["created_at"]+ 'Z');
@@ -100,10 +101,12 @@
             type:'get',
             async:true,
             beforeSend: function( xhr ) {
-                //ajaxPreLoad()
+                ajaxPreLoad()
                 //$("#load-content").fadeOut('slow');
             },
             success: function(response) {
+                $('#load-content').unblock();
+
                 var response = JSON.parse(response);
                 console.log(response)
                 if(!jQuery.isEmptyObject(response)){

@@ -329,8 +329,8 @@
                                     html += "</div>";
                                 }
                                 html += '</li>';
-                                if (message["category_name"] != null && message["category_name"] != "") {
-                                    mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">' + message["category_name"] + '</div>';
+                                if (message["group_name"] != null && message["group_name"] != "") {
+                                    mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">' + message["group_name"] + '</div>';
                                 } else {
                                     mc = "";
                                 }
@@ -339,8 +339,8 @@
                                 else tem_msg = "";
                                 html += '<span class="time_date_sent">' + mc + ' ' + msg_date + '<a href="javascript:void(0)" onclick="removeMessage(' + message["id"] + ',' + tem_msg + ')" class="margin-left-2 text-danger"><i class="clip-remove"></i></a><a href="javascript:void(0)" onclick="editMessage(' + message["id"] + ',' + tem_msg + ')" class="margin-left-2"><i class="fa fa-pencil"></i></a></span>';
                             } else if ((message["app_user_message"] != null && message["app_user_message"] != "") || (message["is_attachment_app_user"] != "" && message["is_attachment_app_user"] != null)) {
-                                if (message["replied"]) {
-                                    html += '<li class="receive_msg reply" style="margin-bottom: -15px;padding-left: 30px;"><div class="replied_message_p p_div" ">' + message['reply_message'] + '</div></li>  ';
+                                if(message["admin_reply_message"]){
+                                    html+='<li class="sent_msg reply" style="margin-bottom: -15px;padding-right: 30px; "><div style="margin-left: 35px">'+message['admin_reply_message']+'</div></li>  ';
                                 }
                                 html += '<li class="receive_msg" id="receive_message_id_' + message['id'] + '">';
                                 if ($.trim(message['user_profile_image']) == "null" || $.trim(message['user_profile_image']) == "") appuser_image = "no-user-image.png";
@@ -378,8 +378,8 @@
                                     }
                                     html += "</div>";
                                 }
-                                if (message["category_name"] != null && message["category_name"] != "") {
-                                    mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">' + message["category_name"] + '</div>';
+                                if (message["group_name"] != null && message["group_name"] != "") {
+                                    mc = '<div class="btn btn-xs btn-info disabled" style="font-size:10px !important;border-radius:7px !important;">' + message["group_name"] + '</div>';
                                 } else {
                                     mc = "";
                                 }
@@ -394,7 +394,7 @@
                     }
 
                     $('#msg_category_name').html(category_name_)
-                    $('#admin_image').attr('src',admin_image_url+'/'+admin_image)
+                    //$('#admin_image').attr('src',admin_image_url+'/'+admin_image)
 
                     //console.log(message_body)
                     if (message_body != "") {

@@ -56,10 +56,11 @@
             type:'GET',
             async:true,
             beforeSend: function( xhr ) {
-                //ajaxPreLoad()
+                ajaxPreLoad()
                 //$("#load-content").fadeOut('slow');
             },
             success: function(response){
+                $('#load-content').unblock();
 
                 response = JSON.parse(response)
                 //console.log(response)

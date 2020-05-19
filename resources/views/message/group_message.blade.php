@@ -68,7 +68,7 @@
 					<input type="hidden" id="app_user_id_profile">
                     <input type="hidden" id="group_msg_group_id">
                     <div class="pull-right">
-						<div class=" padding-5" style="padding:0px  10px">
+						<div class=" padding-5" style="padding:0px  10px;">
 							Category/Topic
 							<select class="" id="message_category_group" style="min-width:150px">
 							</select>
@@ -584,13 +584,13 @@
                                 html += '<span class="time_date_sent">'+mc+' '+msg_date+'<a href="javascript:void(0)" onclick="removeMessage('+message["id"]+','+tem_msg+')" class="margin-left-2 text-danger"><i class="clip-remove"></i></a><a href="javascript:void(0)" onclick="editMessage('+message["id"]+','+tem_msg+')" class="margin-left-2"><i class="fa fa-pencil"></i></a></span>';
                             }
                             else {
-                                if(message["replied"]){
-                                    html+='<li class="receive_msg reply" style="margin-bottom: -15px;padding-left: 30px;"><div class="replied_message_p p_div" ">'+message['reply_message']+'</div></li>  ';
+                                if(message["admin_reply_message"]){
+                                    html+='<li class="sent_msg reply" style="margin-bottom: -15px;padding-right: 30px; "><div style="margin-left: 35px">'+message['admin_reply_message']+'</div></li>  ';
                                 }
                                 html += '<li class="receive_msg" id="receive_message_id_'+message['id']+'">';
                                 if($.trim(message['user_profile_image']) == "null" || $.trim(message['user_profile_image']) == ""  ) appuser_image = "no-user-image.png";
                                 else  									 	appuser_image = message['user_profile_image'];
-                                html += '<img style="width:25px;height:25px;"  src="'+app_user_profile_url+"/"+appuser_image+'" alt="" title="'+message["app_user_name"]+'" onclick="showProfile('+message["app_user_id"]+')"/>';
+                                html += '<img style="width:25px;height:25px;"  src="'+app_user_profile_url+"/"+appuser_image+'" alt="" title="'+message["app_user_name"]+'" onclick="showProfile('+message["replied"]+')"/>';
 
                                 if (message["app_user_message"]!=null && message["app_user_message"]!="") {
                                     html += '<div class="left p_div">'+message["app_user_message"]+'</div><br>';
@@ -643,7 +643,7 @@
                     }
 
                     $('#msg_group_name').html(group_name_)
-                    $('#admin_image').attr('src',admin_image_url+'/'+admin_image)
+                    //$('#admin_image').attr('src',admin_image_url+'/'+admin_image)
 
                     //console.log(message_body)
                     if(message_body != ""){
@@ -739,7 +739,7 @@
                         // need to confirmation
                         if($('#edit_msg_id').val() != ""){
                             if(data == 1){
-                                $('#sent_message_id_'+$('#edit_msg_id').val()+'>p').html($.trim($('#admin_message').val()));
+                                $('#sent_message_id_'+$('#edit_msg_id').val()+'>div').html($.trim($('#admin_message').val()));
                             }
                         }
                         else{

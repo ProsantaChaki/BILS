@@ -88,6 +88,8 @@ loadCourse = function loadCourse(type){
             //$("#load-content").fadeOut('slow');
         },
         success: function(response) {
+            $('#load-content').unblock();
+
             var response = JSON.parse(response);
             if(!jQuery.isEmptyObject(response)){
                 html = "";
@@ -149,10 +151,11 @@ courseDetails  = (id) =>{
             contentType: false,
             processData: false,
             beforeSend: function( xhr ) {
-                //ajaxPreLoad()
+                ajaxPreLoad()
                 //$("#load-content").fadeOut('slow');
             },
             success: function (response) {
+                $('#load-content').unblock();
 
                 response = JSON.parse(response)
 

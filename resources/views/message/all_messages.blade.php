@@ -357,8 +357,8 @@
                                 html += '<span class="time_date_sent">'+mc+' '+msg_date+'<a href="javascript:void(0)" onclick="removeMessage('+message["id"]+','+tem_msg+')" class="margin-left-2 text-danger"><i class="clip-remove"></i></a><a href="javascript:void(0)" onclick="editMessage('+message["id"]+','+tem_msg+')" class="margin-left-2"><i class="fa fa-pencil"></i></a></span>';
                             }
                             else {
-                                if(message["reply_message"]){
-                                    html+='<li class="sent_msg reply" style="margin-bottom: -15px;padding-right: 30px;"><div class="replied_message_p p_div" ">'+message['reply_message']+'</div></li>  ';
+                                if(message["admin_reply_message"]){
+                                    html+='<li class="sent_msg reply" style="margin-bottom: -15px;padding-right: 30px; "><div style="margin-left: 35px">'+message['admin_reply_message']+'</div></li>  ';
                                 }
                                 html += '<li class="receive_msg" id="receive_message_id_'+message['id']+'">';
                                 if($.trim(message['user_profile_image']) == "null" || $.trim(message['user_profile_image']) == ""  ) appuser_image = "no-user-image.png";
@@ -685,7 +685,7 @@
 						// need to confirmation
 						if($('#edit_msg_id').val() != ""){
 							if(data == 1){
-								$('#sent_message_id_'+$('#edit_msg_id').val()+'>p').html($.trim($('#admin_message').val()));
+								$('#sent_message_id_'+$('#edit_msg_id').val()+'>div').html($.trim($('#admin_message').val()));
 							}
 						}
 						else{

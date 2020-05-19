@@ -81,7 +81,13 @@
                 url: "{{ url('app/')}}/load-survey/"+page+'/'+text,
                 type:'get',
                 async:true,
+                beforeSend: function( xhr ) {
+                    ajaxPreLoad()
+                    //$("#load-content").fadeOut('slow');
+                },
                 success: function(response) {
+                    $('#load-content').unblock();
+
                     var response = JSON.parse(response);
                     //console.log(response)
                     if(!jQuery.isEmptyObject(response)){
@@ -142,7 +148,12 @@
                 url: "{{ url('app/')}}/load-survey-details/"+id,
                 type: 'get',
                 async: true,
+                beforeSend: function( xhr ) {
+                    ajaxPreLoad()
+                    //$("#load-content").fadeOut('slow');
+                },
                 success: function (response) {
+                    $('#load-content').unblock();
 
                     response = JSON.parse(response)
 

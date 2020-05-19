@@ -65,11 +65,14 @@
             contentType: false,
             processData: false,
             beforeSend: function( xhr ) {
-                  //ajaxPreLoad()
+                  ajaxPreLoad()
                 //$("#load-content").fadeOut('slow');
             },
             success: function (response) {
                 //console.log(response)
+                //$("#load-content").html();
+                $('#load-content').unblock();
+
 
                 response = JSON.parse(response);
 				var notice_date = new Date(response[0]["notice_date"]+ 'Z');
@@ -109,8 +112,11 @@
                 //$("#load-content").fadeOut('slow');
             },
             success: function(response) {
+                $('#load-content').unblock();
+
                 var response = JSON.parse(response);
                 //console.log(response)
+
                 if(!jQuery.isEmptyObject(response)){
                     html = "";
                     noticeMonth = -1
