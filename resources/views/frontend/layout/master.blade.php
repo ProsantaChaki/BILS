@@ -663,6 +663,18 @@ $("input").bind("click", function () {
 		})
 
 	}
+    courseRegistration = (id) =>{
+        $.ajax({
+            type: "GET",
+            url: "{{ url('app/')}}/user_course_registration/"+id,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+            }
+        })
+    }
+
     seeCourseDetails = (id) =>{
 
         //e.preventDefault();
@@ -674,6 +686,7 @@ $("input").bind("click", function () {
             processData: false,
             success: function (data) {
                 response = JSON.parse(data)
+                console.log(response)
 
                 created = new Date(response[0]["created_at"]+ 'Z');
                 created = created.toDateString()
@@ -681,6 +694,14 @@ $("input").bind("click", function () {
                 start = start.toDateString()
                 end = new Date(response[0]["appx_end_time"]+ 'Z');
                 end = end.toDateString()
+                register = '';
+
+                //alert(response[0]['course_status']+'--'+response[0]['is_interested'])
+
+                if((response[0]['course_status']==2 || response[0]['course_status']==4) && response[0]['is_interested']==1){
+                    register = "<button class='btn btn-disabled btn-blue btn-xs' onclick='courseRegistration("+response[0]['cp_id']+")'>Register Now</button>"
+                }
+                c_status = "<button class='btn btn-disabled btn-orange btn-xs' disabled style='float: right'>"+response[0]['status']+"</button>"
 
 
                 let category_name = (response[0]["category_name"])?"<button class='btn btn-disabled btn-info btn-xs'>"+response[0]["category_name"]+"</button>":"";
@@ -688,12 +709,13 @@ $("input").bind("click", function () {
                 let  p = '<span><p style="text-align:left"> Teacher: '+response[0]['name']+'<b style="float:right">Duration: '+start+' to '+end+'</b> </p></span><br>'
 
                 let attachment = '';
+                //alert(register)
 
                 if(response[0]['attachment']){
                     //attachment = attachment_url+'/'+response[0]['attachment'];
                     attachment = "<br>"+publication+ '<br><a class="btn btn-disabled btn-warning" href="'+attachment_url+'/'+response[0]["attachment"]+'" download><i class="clip-attachment"></i></a>'
                 }
-                html = '<div class="alert alert-block alert-info fade in"><h4>'+response[0]["title"]+'</h4>' + category_name + p +'<hr>'+response[0]['details']+'</div>'
+                html = '<div class="alert alert-block alert-info fade in">'+c_status+'<h4>'+response[0]["title"]+'</h4>' + category_name + '  '+register + p +'<hr>'+response[0]['details']+'</div>'
 
                 $('#course_description_side').html(html)
             }

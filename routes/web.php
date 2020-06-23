@@ -71,6 +71,7 @@ Route::group(['middleware'=>'appUser'], function() {
     Route::post('app/send-message',array('as'=>'Message' , 'uses' =>'FrontEndController@sendMessage'));
     Route::get('app/message_notification',array('as'=>'Notification' , 'uses' =>'FrontEndController@messageListNotification'));
     Route::get('app/message_view/{id}',array('as'=>'Message View' , 'uses' =>'FrontEndController@messageView'));
+    Route::get('app/course_registration',array('as'=>'Course Registration' , 'uses' =>'FrontEndController@courseRegistration'));
 
 
     Route::get('app/notification_view/{id}',array('as'=>'Notification' , 'uses' =>'FrontEndController@notificationView'));
@@ -83,17 +84,21 @@ Route::group(['middleware'=>'appUser'], function() {
     Route::get('app/load-publications/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@publications'));
     Route::get('app/load-publications-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@publicationsDtails'));
 
-    Route::get('app/load-course/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courses'));
-    Route::get('app/load-course-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@courseDtails'));
+    Route::get('app/load-course/{page}/{search}',array('as'=>'Course' , 'uses' =>'FrontEndController@courses'));
+    Route::get('app/load-course-details/{id}',array('as'=>'Course' , 'uses' =>'FrontEndController@courseDtails'));
+    Route::get('app/course-interest/{id}',array('as'=>'Course' , 'uses' =>'FrontEndController@courseInterest'));
 
     Route::get('app/load-survey/{page}/{search}',array('as'=>'Notice' , 'uses' =>'FrontEndController@allSurvey'));
     Route::get('app/load-survey-details/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@surveyDtails'));
 
     Route::get('app/user_course',array('as'=>'Notice' , 'uses' =>'FrontEndController@userCourse'));
     Route::get('app/user_course_description/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@userCourseDescription'));
+    Route::get('app/user_course_registration/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@userCourseRegistration'));
 
     Route::get('app/user_survey',array('as'=>'Notice' , 'uses' =>'FrontEndController@userSurvey'));
     Route::get('app/user_survey_description/{id}',array('as'=>'Notice' , 'uses' =>'FrontEndController@userSurveyDescription'));
+    Route::get('app/survey-interest/{id}',array('as'=>'Survey' , 'uses' =>'FrontEndController@surveyInterest'));
+
 
     Route::get('app/notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeList'));
 	Route::get('app/detail-notice',array('as'=>' Notice' , 'uses' =>'FrontEndController@noticeDetail'));

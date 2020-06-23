@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\AppUser;
+use App\CourseMaster;
+use App\CoursePerticipant;
 use App\MessageAttachment;
 use App\Notice;
 use App\UserGroup;
@@ -10,6 +12,7 @@ use Illuminate\Http\Request;
 use App\MessageMaster;
 use App\MessageCategory;
 use App\Notification;
+use App\SurveyParticipatent;
 use DB;
 use mysql_xdevapi\Session;
 
@@ -364,6 +367,54 @@ class FrontEndController extends Controller
         return json_encode($publication);
     }
 
+    public function courseInterest($id){
+
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $interested = CoursePerticipant::where([['perticipant_id',$user_info['id']],['course_id',$id]])->get('id');
+
+        try {
+            if(!isset($interested[0])){
+
+                $course = new CoursePerticipant();
+                $course->perticipant_id = $user_info['id'];
+                $course->course_id = $id;
+                $course->is_interested = 1;
+                $course->status = 1;
+
+                $course->save();
+
+                //$courseId= $course->save();
+
+            }else{
+                $columnValue=array(
+                    'is_interested' => 1,
+                    'status'=>1,
+                );
+
+                CoursePerticipant::where([['perticipant_id',$user_info['id']],['course_id',$id]])->update($columnValue);
+            }
+            $course_details = CourseMaster::where('id', $id)->get('course_title');
+
+            $column_value1 = [
+                'from_id'=>$user_info['id'],
+                'from_user_type'=>'App User',
+                'to_user_type'=>'Admin',
+                'notification_title'=>$user_info['name'].' interested for a course',
+                'message'=>$user_info['name'].' interested for the course entitle: '.$course_details[0]['course_title'],
+                'view_url'=>'course/'.$id,
+                'module_id'=>7,
+                'module_reference_id'=>$id
+            ];
+            Notification::create($column_value1);
+            $return['result'] = "1";
+            return json_encode($return);
+        }catch (\Exception $e){
+            return 0;
+
+        }
+    }
+
     public function userCourse(){
 
         $category = $this->language==='en'? 'cc.category_name as category_name': 'cc.category_name_bn as category_name';
@@ -375,6 +426,7 @@ class FrontEndController extends Controller
             ->leftJoin('course_categories as cc','p.course_type','=','cc.id')
             ->leftJoin('course_perticipants as cp','p.id','=','cp.course_id')
             ->where('cp.perticipant_id','=',$user_info['id'])
+            ->whereIn('cp.is_interested',['1','2','4'])
             ->select('p.id','cp.id as cp_id','cp.perticipant_id','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category, 'cp.is_interested',
                 DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
                 DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_start_time)) as appx_start_time'),
@@ -396,9 +448,15 @@ class FrontEndController extends Controller
         $course = DB::table('course_masters as p')
             ->leftJoin('teachers as t','p.course_teacher','=','t.id')
             ->leftJoin('course_categories as cc','p.course_type','=','cc.id')
-            ->leftJoin('course_perticipants as cp','p.id','=','cp.course_id')
+            ->leftJoin('course_perticipants as cp', function($leftJoin)
+            {
+                $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+                $leftJoin->on('p.id','=','cp.course_id')
+                    ->where('cp.perticipant_id', '=', $user_info['id'] );
+            })
             ->where('p.id','=',$id)
-            ->select('p.id','cp.id as cp_id','cp.perticipant_id','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category, 'cp.is_interested',
+            ->select('p.id','p.course_status','cp.id as cp_id','cp.perticipant_id','cp.payment_status','p.course_title as title','p.payment_fee', 'p.details','p.perticipants_limit','p.course_type','t.name','p.attachment',$category, 'cp.is_interested',
                 DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.created_at)) as created_at'),
                 DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_start_time)) as appx_start_time'),
                 DB::Raw('from_unixtime(UNIX_TIMESTAMP(p.appx_end_time)) as appx_end_time'),
@@ -409,6 +467,15 @@ class FrontEndController extends Controller
             ->get();
 
         return json_encode($course);
+    }
+
+    public function userCourseRegistration ($id){
+        //$user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+        CoursePerticipant::where('id',$id)->update(['is_interested'=>2]);
+        //Notification::where([['to_id',$user_info['id']],['module_id',6],['module_reference_id',$id]])->update(['status'=>1]);
+
+        return 1;
+
     }
 
     public function userSurvey(){
@@ -453,6 +520,35 @@ class FrontEndController extends Controller
         return json_encode($course);
 
         return json_encode($course);
+    }
+
+    public function surveyInterest($id){
+	    //not fully done yet
+        $user_info = \App\AppUser::where('email',\Auth::guard('appUser')->user()->email)->first();
+
+        $interested = SurveyParticipatent::where([['app_user_id',$user_info['id']],['survey_id',$id]])->get('id');
+
+        if(!isset($interested[0])){
+
+            $servey = new SurveyParticipatent();
+            $servey->app_user_id = $user_info['id'];
+            $servey->survey_id = $id;
+            $servey->survey_completed = 0;
+            $servey->answer_date = date("Y-m-d");
+
+            $servey->save();
+            return $servey->save();
+        }else{
+            return $interested;
+        }
+
+        $columnValue=array(
+            'is_interested' => 1,
+            'status'=>1,
+        );
+
+        //$return =  CoursePerticipant::where([['perticipant_id',$user_info['id']],['course_id',$id]])->update($columnValue);
+
     }
 
 
@@ -922,6 +1018,13 @@ class FrontEndController extends Controller
         $data['page_title'] = $this->page_title;
 		$data['module_name']= "Survey";
         return view('frontend.survey', $data);
+    }
+
+    public function courseRegistration(){
+        $data['page_title'] = $this->page_title;
+        $data['module_name']= "Course registration";
+        //$data['id']=$id;
+        return view('frontend.course_registration', $data);
     }
 
 

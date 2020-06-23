@@ -143,6 +143,23 @@
 
         loadsurvey(1)
 
+        surveyInterested =(id) =>{
+            $.ajax({
+                url: "{{ url('app/')}}/survey-interest/" + id,
+                type: 'get',
+                async: true,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // $('#responsive').modal().hide();
+                    //$('#responsive').modal('toggle')
+                    //$("#responsive .close").click()
+
+                }
+            })
+
+        }
+
         surveyDetails  = (id) =>{
             $.ajax({
                 url: "{{ url('app/')}}/load-survey-details/"+id,
@@ -167,7 +184,7 @@
                     end = end.toDateString()
 
 
-                    let interested = '<button data-dismiss="alert" class="btn btn-success btn-sm" onclick="notInterested('+response[0]["id"]+')" type="button">\n' +
+                    let interested = '<button data-dismiss="alert" class="btn btn-success btn-sm" onclick="surveyInterested('+response[0]["id"]+')" type="button">\n' +
                         'Interested\n' +
                         '</button>\n'
                     let category_name = (response[0]["category_name"])?"<button class='btn btn-disabled btn-info btn-xs'>"+response[0]["category_name"]+"</button>":"";

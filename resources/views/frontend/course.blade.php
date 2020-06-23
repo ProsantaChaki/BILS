@@ -143,6 +143,25 @@ loadCourse = function loadCourse(type){
 
 loadCourse(1)
 
+courseInterest =(id) =>{
+    $.ajax({
+        url: "{{ url('app/')}}/course-interest/" + id,
+        type: 'get',
+        async: true,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+           // $('#responsive').modal().hide();
+            //$('#responsive').modal('toggle')
+            //$("#responsive .close").click()
+            loadCourseSideBar()
+
+        }
+    })
+
+}
+
+
 courseDetails  = (id) =>{
         $.ajax({
             url: "{{ url('app/')}}/load-course-details/"+id,
@@ -169,10 +188,10 @@ courseDetails  = (id) =>{
                 end = end.toDateString()
 
 
-                let interested = '<button data-dismiss="alert" class="btn btn-success btn-sm" onclick="notInterested('+response[0]["id"]+')" type="button">\n' +
+                let interested = '<button data-dismiss="alert" class="btn btn-success btn-sm" onclick="courseInterest('+response[0]["id"]+')" type="button">\n' +
                     'Interested?\n' +
                     '</button>\n' +
-                    '<button data-dismiss="alert" class="btn btn-danger btn-sm" onclick="interested('+response[0]["id"]+')" type="button">\n' +
+                    '<button data-dismiss="alert" class="btn btn-danger btn-sm" onclick="" type="button">\n' +
                     'No?\n' +
                     '</button>'
                 let category_name = (response[0]["category_name"])?"<button class='btn btn-disabled btn-info btn-xs'>"+response[0]["category_name"]+"</button>":"";
